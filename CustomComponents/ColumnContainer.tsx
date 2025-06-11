@@ -1,3 +1,4 @@
+//2025-06-11 : Removing flex value as a default
 //2025-06-04 : Simple implementation for containers
 import {View} from "react-native";
 import type { PropsWithChildren } from "react";
@@ -23,7 +24,6 @@ const ColumnContainer = ({style, children, 'aria-label' : ariaLabel} : PropsWith
 
 const columnContainerStyles = {
     display: "flex",
-    flexGrow: 1,
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
