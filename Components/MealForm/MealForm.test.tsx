@@ -1,3 +1,4 @@
+//2025-06-12 : Minor text editing
 //2025-06-05 : Added and tested meal name form
 //2025-06-04 : Initial Commit with placeholder implementation
 
@@ -7,7 +8,7 @@ import MealForm from './MealForm';
 describe('MealForm Component', () => {
   it('renders title text correctly', () => {
     const {getByText} = render(<MealForm />);
-    expect(getByText('Meal Form')).toBeTruthy();
+    expect(getByText('Meals Form')).toBeTruthy();
   });
   it("renders input field", () => {
     const {getByText, getByLabelText} = render(<MealForm />);
