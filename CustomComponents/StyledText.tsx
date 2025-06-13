@@ -1,3 +1,4 @@
+//2025-06-13 : Whitespace changes
 //2025-06-05 : Simple implementation for containers
 import {Text} from "react-native";
 import type { PropsWithChildren } from "react";
@@ -9,6 +10,7 @@ type StyledTextProps = {
 }
 
 const StyledText = ({style, children, 'aria-label' : ariaLabel} : PropsWithChildren<StyledTextProps>) => {
+
     return (
         <Text style={{ 
             ...styledTextStyles,
