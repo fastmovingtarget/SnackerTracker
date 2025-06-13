@@ -20,4 +20,4 @@ Food diary and symptom tracker
 - Pattern tracking and data visualisation - probably in a new tab - need to get measurable metrics for how the user feels.
 - Maybe find a way to break down a meal into nutritional value - might require AI support?
 
-# Current Stage : Ideation and initialisation
+# Current Stage : MVP Development
