@@ -1,3 +1,4 @@
+//2025-06-13 : Tidying up the styles
 //2025-06-12 : Moving Calendar and Form views to different states, Improving Collapsible buttons
 //2025-06-05 : Adding MealForm, SymptomForm and Calendar, collapsible buttons for the forms
 //2025-06-03 : Creating file and initialising a basic render
@@ -15,11 +16,12 @@ export default function Home() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   return (
-    <ScrollableContainer style={{margin: 0, borderRadius: 0, padding: 0, justifyContent:"flex-start"}}>
-      <Text style={{ textAlign:"center", color:"white" }}>Welcome to the Home Screen!</Text>
-      <ColumnContainer style={{display: !selectedDate ? "none" : "flex", flex:1}}>
+    <ScrollableContainer style={{borderRadius: 0, padding: 0, margin:0, justifyContent:"flex-start", flexDirection:"column", minWidth:"100%"}}>
+      <Text style={{ textAlign:"center", color:"white"}}>Welcome to the Home Screen!</Text>
+      <ColumnContainer style={{display: !selectedDate ? "none" : "flex", flex:1, justifyContent:"flex-start", alignItems:"flex-start"}}>
         <PressableContainer
-          onPress={() => setSelectedDate(null)}>
+          onPress={() => setSelectedDate(null)}
+          style={{alignSelf:"flex-start"}}>
           <StyledText style={{textAlign: "center", fontSize: 18}}>
             {"Back to Calendar"}
           </StyledText>
