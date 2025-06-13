@@ -1,3 +1,4 @@
+//2025-06-13 : Adding dummy function for meal form submit handling
 //2025-06-13 : Tidying up the styles
 //2025-06-12 : Moving Calendar and Form views to different states, Improving Collapsible buttons
 //2025-06-05 : Adding MealForm, SymptomForm and Calendar, collapsible buttons for the forms
@@ -8,12 +9,20 @@ import Calendar from './Calendar/Calendar';
 import { ColumnContainer, RowContainer, PressableContainer, StyledText, CollapsibleContainer, ScrollableContainer } from '../CustomComponents/CustomComponents';
 import MealForm from './MealForm/MealForm';
 import SymptomForm from './SymptomForm/SymptomForm';
+import type Meal from '../Types/Meal';
+import type Symptom from '../Types/Symptom';
+import type TrackerDay from '../Types/TrackerDay';
 
 export default function Home() {
 
   const [focusForm, setFocusForm] = useState<"Meal" | "Symptom" | null>(null);
+  const [trackerData, setTrackerData] = useState<TrackerDay[]>([]); // Placeholder for tracker data
 
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
+  const handleSubmit = (mealName: string) => {
+    
+  };
 
   return (
     <ScrollableContainer style={{borderRadius: 0, padding: 0, margin:0, justifyContent:"flex-start", flexDirection:"column", minWidth:"100%"}}>
@@ -34,7 +43,7 @@ export default function Home() {
           isExpanded={focusForm === "Meal"}
           onPress={() => setFocusForm(focusForm === "Meal" ? null : "Meal")}
           >
-          <MealForm />
+          <MealForm submitHandler={handleSubmit}/>
         </CollapsibleContainer>
         <CollapsibleContainer
           collapsibleTitle="Symptoms"
