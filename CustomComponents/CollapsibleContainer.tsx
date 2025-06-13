@@ -1,3 +1,4 @@
+//2025-06-13 : Apply the styles to the container rather than the pressable
 //2025-06-11 : Building a container for collapsible elements
 import {Pressable, View} from "react-native";
 import { useState } from "react";
@@ -19,12 +20,12 @@ const CollapsibleContainer : React.FC<CollapsibleContainerProps> = ({style, chil
     const rotateString = isExpanded ? "90deg" : "0deg";
 
     return (
-        <ColumnContainer >
-            <Pressable 
+        <ColumnContainer 
                 style={{ 
                     ...collapsibleContainerStyles,
                     ...style,
-                }}
+                }}>
+            <Pressable 
                 onPress={onPress}
                 accessibilityRole={accessibilityRole}
                 aria-label={ariaLabel}
@@ -45,7 +46,7 @@ const CollapsibleContainer : React.FC<CollapsibleContainerProps> = ({style, chil
 const collapsibleContainerStyles = {
     display: "flex",
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "flex-start",
 } as ViewStyle;
 
 
