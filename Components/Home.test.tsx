@@ -1,3 +1,4 @@
+//2025-08-19 : Added Loading and Saving data to local storage
 //2025-06-12 : Tests for Calendar and Forms now visible in different states
 //2025-06-05 : Adding MealForm, SymptomForm and Calendar, collapsible buttons for the forms
 //2025-06-03 : Creating file and initialising a basic render
@@ -30,7 +31,11 @@ jest.mock("./Calendar/Calendar", () => {
 
 beforeEach(() => {
   jest.resetAllMocks();
-  (MealForm as jest.Mock).mockImplementation(() => <Text>Meal Form</Text>);
+  (MealForm as jest.Mock).mockImplementation(({ submitHandler }) => (
+      <Pressable onPress={() => {console.log("Meal Form Pressed");submitHandler("Meals", [{ Meal_Name: "Breakfast" }])}}>
+        <Text>Meal Form</Text>
+      </Pressable>
+    ));
   (SymptomForm as jest.Mock).mockImplementation(() => <Text>Symptom Form</Text>);
   (Calendar as jest.Mock).mockImplementation(({setSelectedDate, isVisible}) => 
     <Pressable onPress={() => setSelectedDate(new Date())} style={{display: isVisible ? 'flex' : 'none'}}>
@@ -134,4 +139,17 @@ describe("Home Component handles", () => {
     expect(getByText("Symptom Form")).toBeTruthy(); // Now displayed
     expect(queryByText("Meal Form")).toBeNull(); // Meal Form should be hidden
   })
+  it("Submit Meal Form", async () => {
+    const user = userEvent.setup();
+    const mockSubmitHandler = jest.fn(() => console.log("Meal Form Submitted"));
+
+    const { getByText } = render(<Home />);
+
+    await user.press(getByText("Calendar")); // Simulate selecting a date
+    await user.press(getByText(/Meals/i)); // Open Meal Form
+    expect(getByText("Meal Form")).toBeTruthy(); // Now displayed
+    await user.press(getByText("Meal Form")); // Submit Meal Form
+
+    expect(mockSubmitHandler).toHaveBeenCalledWith("Meals", [{ Meal_Name: "Breakfast" }]);
+  });
 })
