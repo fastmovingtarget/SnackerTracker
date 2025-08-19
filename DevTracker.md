@@ -17,6 +17,13 @@
     - Load second, so we have something to conceptualise the display around
     - Edit and Delete last - Important, but not blocking other features
 
+## Tasks from 18/06/2025
+- Write full tests for data save/load/edit
+- Tidy up meal form functionality
+
 ## Bugs and Solutions
 - Infinity height containers
     - related to flex-grow, I've removed it for now
+
+## Notes
+- Dev time from 16/06/2025 has been drastically reduced to to the heatwave
