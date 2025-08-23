@@ -1,3 +1,4 @@
+//2025-08-23 : Removed console log
 //2025-08-19 : Storage functions for accessing local storage
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type TrackerDay from '../Types/TrackerDay';
@@ -41,7 +42,6 @@ export const writeToStorage = async (key: string, data: TrackerDay[]) => {
 export const readFromStorage = async (key: string) => {
 
     const resultPromise = new Promise((resolve, reject) => {
-        console.log("Reading from storage with key:", key);
         storage.load({
             key: key, // The key for the data
         }).then((result) => {
