@@ -1,3 +1,4 @@
+//2025-08-23 : Added handling for finishing editing
 //2025-06-05 : Simple implementation for containers
 import {Text, TextInput, NativeSyntheticEvent, TextInputSubmitEditingEventData} from "react-native";
 import type { PropsWithChildren } from "react";
@@ -10,12 +11,13 @@ type InputTextProps = {
     inputMode?:'numeric' | 'text',
     onChange?:(event : NativeSyntheticEvent<TextInputChangeEventData>) => void,
     onChangeText?:(text : string) => void,
+    onFinishEditing?: (event: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => void,
     ["aria-label"]:string
     multiline?: boolean,
     numberOfLines?: number,
 }
 
-const StyledTextInput = ({style, children, defaultValue = "", inputMode = "text", onChange, onChangeText, 'aria-label' : ariaLabel, placeholder = "", multiline = false, numberOfLines = 1} : PropsWithChildren<InputTextProps>) => {
+const StyledTextInput = ({style, children, defaultValue = "", inputMode = "text", onChange, onChangeText, onFinishEditing, 'aria-label' : ariaLabel, placeholder = "", multiline = false, numberOfLines = 1} : PropsWithChildren<InputTextProps>) => {
     return (
         <TextInput 
             style={{ 
@@ -31,6 +33,7 @@ const StyledTextInput = ({style, children, defaultValue = "", inputMode = "text"
             placeholderTextColor={"#e3dccf"}
             multiline={multiline}
             numberOfLines={numberOfLines}
+            onBlur={onFinishEditing}
         >
             {children}
         </TextInput>
