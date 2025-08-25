@@ -1,3 +1,4 @@
+//2025-08-25 : Meal Form expands to show meal ingredients
 //2025-08-23 : Added handling for finishing editing
 //2025-06-05 : Simple implementation for containers
 import {Text, TextInput, NativeSyntheticEvent, TextInputSubmitEditingEventData} from "react-native";
@@ -15,9 +16,13 @@ type InputTextProps = {
     ["aria-label"]:string
     multiline?: boolean,
     numberOfLines?: number,
+    editable?: boolean,
+    ref?: React.RefObject<TextInput | null>,
+    autoFocus?: boolean
 }
 
-const StyledTextInput = ({style, children, defaultValue = "", inputMode = "text", onChange, onChangeText, onFinishEditing, 'aria-label' : ariaLabel, placeholder = "", multiline = false, numberOfLines = 1} : PropsWithChildren<InputTextProps>) => {
+const StyledTextInput = ({style, children, defaultValue = "", inputMode = "text", onChange, onChangeText, onFinishEditing, 'aria-label' : ariaLabel, placeholder = "", multiline = false, numberOfLines = 1, editable = true, ref, autoFocus = false} : PropsWithChildren<InputTextProps>) => {
+
     return (
         <TextInput 
             style={{ 
@@ -34,6 +39,9 @@ const StyledTextInput = ({style, children, defaultValue = "", inputMode = "text"
             multiline={multiline}
             numberOfLines={numberOfLines}
             onBlur={onFinishEditing}
+            editable={editable}
+            ref={ref}
+            autoFocus={autoFocus}
         >
             {children}
         </TextInput>

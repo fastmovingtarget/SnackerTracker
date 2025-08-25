@@ -1,3 +1,4 @@
+//2025-08-25 : Meal Form expands to show meal ingredients
 //2025-08-23 : Meal Form now only contains text input
 //2025-08-19 : Meal Form now has handling for edit and delete buttons
 //2025-06-13 : Testing form submission handling
@@ -9,35 +10,53 @@ import { render, userEvent } from '@testing-library/react-native';
 import { TextInput, Text } from 'react-native';
 import MealForm from './MealForm';
 import type Meal from '../../../../Types/Meal';
+import { use } from 'react';
 
 describe('MealForm Component Renders', () => {
-  it("Existing meal name", () => {
+  it("Existing meal name as text", () => {
     const {getByLabelText} = render(<MealForm submitHandler={jest.fn()} meal={{Meal_Name: 'Breakfast'}} index={0} />);
 
-    expect(getByLabelText(/Meal Name Input 1/i)).toHaveDisplayValue("Breakfast");
+    expect(getByLabelText(/Meal Name Text 1/i)).toHaveTextContent("Breakfast");
+  })
+  it("Blank meal name as form", () => {
+    const {getByLabelText} = render(<MealForm submitHandler={jest.fn()} meal={{Meal_Name: ''}} index={0} />);
+
+    expect(getByLabelText(/Meal Name Input 1/i)).toHaveDisplayValue("");
   })
 });
 
 describe('MealForm Component handles', () => {
   describe("Meal Name Text Input", () => {
-    it('Changes value when blank', async () => {
+    it('Appears initially when meal name is blank, Changes value then no longer appears when user is finished editing', async () => {
       const user = userEvent.setup();
 
-      const {getByLabelText} = render(<MealForm submitHandler={jest.fn()} meal={{Meal_Name: ''}} index={0} />);
+      const submitHandlerMock = jest.fn();
+
+      const {getByLabelText, queryByLabelText} = render(<MealForm submitHandler={submitHandlerMock} meal={{Meal_Name: ''}} index={0} />);
+
+      expect(getByLabelText(/Meal Name Input 1/i)).toHaveDisplayValue("");
 
       const inputField = getByLabelText(/Meal Name Input 1/i);
+      expect(inputField).toHaveDisplayValue("");
+
+      expect(submitHandlerMock).not.toHaveBeenCalled();
 
       // Simulate user typing into the input field
       await user.press(inputField);
       await user.type(inputField, 'Breakfast');
-      
-      // Check if the input field value has changed
-      expect(getByLabelText(/Meal Name Input 1/i)).toHaveDisplayValue("Breakfast");
-    });
-    it('Changes value when editing an existing meal', async () => {
-      const user = userEvent.setup();
 
-      const {getByLabelText} = render(<MealForm submitHandler={jest.fn()} meal={{Meal_Name: 'Lunch'}} index={1} />);
+      expect(submitHandlerMock).toHaveBeenCalledWith({Meal_Name: 'Breakfast', Meal_Ingredients:[{Ingredient_Name:""}]} as Meal, 0);
+      expect(queryByLabelText(/Meal Name Input 1/i)).toBeNull();
+    });
+    it('Doesn\'t appear initially, Changes value when editing an existing meal, no longer appears when user is finished editing', async () => {
+      const user = userEvent.setup();
+      const submitHandlerMock = jest.fn();
+
+      const {getByLabelText, queryByLabelText} = render(<MealForm submitHandler={submitHandlerMock} meal={{Meal_Name: 'Lunch'}} index={1} />);
+      expect(queryByLabelText(/Meal Name Input 2/i)).toBeNull();
+
+      const text = getByLabelText(/Meal Name Text 2/i);
+      await user.longPress(text);
 
       const inputField = getByLabelText(/Meal Name Input 2/i);
 
@@ -46,28 +65,40 @@ describe('MealForm Component handles', () => {
       await user.type(inputField, 'yLunch');
       
       // Check if the input field value has changed
-      expect(getByLabelText(/Meal Name Input 2/i)).toHaveDisplayValue("LunchyLunch");
+      expect(submitHandlerMock).toHaveBeenCalledWith({Meal_Name: 'LunchyLunch', Meal_Ingredients:[{Ingredient_Name:""}]} as Meal, 1);
+      expect(queryByLabelText(/Meal Name Input 2/i)).toBeNull();
     });
-    it('Calls submitHandler with updated meal name on finish editing', async () => {
+  });
+  describe("Meal Collapsible", () => {
+    it('Expands to show ingredients when meal name is set and user taps the header, Collapses when user taps again', async () => {
       const user = userEvent.setup();
-      const mockSubmitHandler = jest.fn();
+      const submitHandlerMock = jest.fn();
 
-      const {getByText, getByLabelText} = render(<>
-        <Text>BlurHelper</Text>
-        <MealForm submitHandler={mockSubmitHandler} meal={{Meal_Name: 'Dinner'}} index={2} />
-      </>);
+      const { getByLabelText, queryByLabelText } = render(<MealForm submitHandler={submitHandlerMock} meal={{ Meal_Name: 'Dinner', Meal_Ingredients: [{ Ingredient_Name: 'Chicken' }] }} index={2} />);
 
-      const inputField = getByLabelText(/Meal Name Input 3/i);
+      const header = getByLabelText(/Meal Name Text 3/i);
+      await user.press(header);
 
-      // Simulate user typing into the input field
-      await user.press(inputField);
-      await user.type(inputField, 'y');
+      expect(getByLabelText(/Ingredient Name Text Input 1/i)).toBeTruthy();
 
-      // Check if the input field value has changed
-      expect(getByLabelText(/Meal Name Input 3/i)).toHaveDisplayValue("Dinnery");
+      await user.press(header);
+      expect(queryByLabelText(/Ingredient Name Text Input 1/i)).toBeNull();
+    });
+  });
+  describe("Ingredients", () => {
+    it('Existing values can be changed, and display and submit correctly', async () => {
+      const user = userEvent.setup();
+      const submitHandlerMock = jest.fn();
 
-      // Check if submitHandler was called with the updated meal
-      expect(mockSubmitHandler).toHaveBeenCalledWith({Meal_Name: 'Dinnery'} as Meal, 2);
+      const { getByLabelText, queryByLabelText } = render(<MealForm submitHandler={submitHandlerMock} meal={{ Meal_Name: 'Dinner', Meal_Ingredients: [{ Ingredient_Name: 'Chicken' }] }} index={2} />);
+
+      const header = getByLabelText(/Meal Name Text 3/i);
+      await user.press(header);
+
+      expect(getByLabelText(/Ingredient Name Text Input 1/i)).toBeTruthy();
+      await user.type(getByLabelText(/Ingredient Name Text Input 1/i), 'Rice');
+      expect(getByLabelText(/Ingredient Name Text Input 1/i)).toHaveDisplayValue("ChickenRice");
+      expect(submitHandlerMock).toHaveBeenCalledWith({ Meal_Name: 'Dinner', Meal_Ingredients: [{ Ingredient_Name: 'ChickenRice' }, { Ingredient_Name: "" }] } as Meal, 2);
     });
   });
 });
