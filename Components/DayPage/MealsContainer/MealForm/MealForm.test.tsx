@@ -1,3 +1,4 @@
+//2025-08-26 : Improved testing for collapsible functionality
 //2025-08-25 : Meal Form expands to show meal ingredients
 //2025-08-23 : Meal Form now only contains text input
 //2025-08-19 : Meal Form now has handling for edit and delete buttons
@@ -23,6 +24,15 @@ describe('MealForm Component Renders', () => {
 
     expect(getByLabelText(/Meal Name Input 1/i)).toHaveDisplayValue("");
   })
+  it("Collapsible chevron when there are ingredients", () => {
+    const { getByText } = render(<MealForm submitHandler={jest.fn()} meal={{ Meal_Name: 'Breakfast', Meal_Ingredients: [{ Ingredient_Name: 'Eggs' }] }} index={0} />);
+
+    expect(getByText(/\u203A/i)).toBeTruthy();
+  });
+  it("No Collapsible chevron when there are no ingredients and name is blank", () => {
+    const { queryByText } = render(<MealForm submitHandler={jest.fn()} meal={{ Meal_Name: '', Meal_Ingredients: [] }} index={0} />);
+    expect(queryByText(/\u203A/i)).toBeNull();
+  });
 });
 
 describe('MealForm Component handles', () => {
@@ -45,7 +55,7 @@ describe('MealForm Component handles', () => {
       await user.press(inputField);
       await user.type(inputField, 'Breakfast');
 
-      expect(submitHandlerMock).toHaveBeenCalledWith({Meal_Name: 'Breakfast', Meal_Ingredients:[{Ingredient_Name:""}]} as Meal, 0);
+      expect(submitHandlerMock).toHaveBeenCalledWith({Meal_Name: 'Breakfast'} as Meal, 0);
       expect(queryByLabelText(/Meal Name Input 1/i)).toBeNull();
     });
     it('Doesn\'t appear initially, Changes value when editing an existing meal, no longer appears when user is finished editing', async () => {
@@ -70,7 +80,7 @@ describe('MealForm Component handles', () => {
     });
   });
   describe("Meal Collapsible", () => {
-    it('Expands to show ingredients when meal name is set and user taps the header, Collapses when user taps again', async () => {
+    it('Expands to show ingredients when ingredients exist', async () => {
       const user = userEvent.setup();
       const submitHandlerMock = jest.fn();
 
@@ -84,6 +94,17 @@ describe('MealForm Component handles', () => {
       await user.press(header);
       expect(queryByLabelText(/Ingredient Name Text Input 1/i)).toBeNull();
     });
+    it('Does nothing when ingredients do not exist or are empty array', async () => {
+      const user = userEvent.setup();
+      const submitHandlerMock = jest.fn();
+
+      const { getByLabelText, queryByLabelText } = render(<MealForm submitHandler={submitHandlerMock} meal={{ Meal_Name: '', Meal_Ingredients: [] }} index={2} />);
+
+      const header = getByLabelText(/Meal Name Input 3/i);
+      await user.press(header);
+
+      expect(queryByLabelText(/Ingredient Name Text Input 1/i)).toBeNull();
+    });
   });
   describe("Ingredients", () => {
     it('Existing values can be changed, and display and submit correctly', async () => {
@@ -95,7 +116,7 @@ describe('MealForm Component handles', () => {
       const header = getByLabelText(/Meal Name Text 3/i);
       await user.press(header);
 
-      expect(getByLabelText(/Ingredient Name Text Input 1/i)).toBeTruthy();
+      expect(getByLabelText(/Ingredient Name Text Input 2/i)).toBeTruthy();
       await user.type(getByLabelText(/Ingredient Name Text Input 1/i), 'Rice');
       expect(getByLabelText(/Ingredient Name Text Input 1/i)).toHaveDisplayValue("ChickenRice");
       expect(submitHandlerMock).toHaveBeenCalledWith({ Meal_Name: 'Dinner', Meal_Ingredients: [{ Ingredient_Name: 'ChickenRice' }, { Ingredient_Name: "" }] } as Meal, 2);
