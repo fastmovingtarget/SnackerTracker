@@ -1,3 +1,4 @@
+//2025-08-26 : Fixed mock symptom form
 //2025-08-23 : Container for the symptom input forms
 
 
@@ -16,11 +17,13 @@ jest.mock("./SymptomForm/SymptomForm", () => {
 
 beforeEach(() => {
   jest.resetAllMocks();
-  (SymptomForm as jest.Mock).mockImplementation(({ submitHandler, symptom, index }) => (
+  (SymptomForm as jest.Mock).mockImplementation(({ submitHandler, symptom, index }) => {
+    return (
       <Pressable onPress={() => {submitHandler(symptom, index)}}>
-        <Text>{symptom.Name || 'Symptom Form'}</Text>
+        <Text>{symptom.Symptom_Name || 'Symptom Form'}</Text>
       </Pressable>
-    ));
+    );
+  });
 });
 
 describe('SymptomsContainer Component Renders', () => {
