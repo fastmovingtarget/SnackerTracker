@@ -1,3 +1,4 @@
+//2025-08-26 : Day Page call now uses submitHandler rather than handleSubmit
 //2025-08-23 : Home now uses the DayPage container
 //2025-08-19 : Added Loading and Saving data to local storage
 //2025-06-13 : Adding dummy function for meal form submit handling
@@ -70,7 +71,7 @@ export default function Home() {
     <ScrollableContainer style={{borderRadius: 0, padding: 0, margin:0, justifyContent:"flex-start", flexDirection:"column", minWidth:"100%"}}>
       <Text style={{ textAlign:"center", color:"white"}}>Welcome to the Home Screen!</Text>
       <ColumnContainer style={{display: !selectedDate ? "none" : "flex", flex:1, justifyContent:"flex-start", alignItems:"flex-start"}}>
-        <DayPage selectedDate={selectedDate} backHandler={() => setSelectedDate(null)} handleSubmit={handleSubmit} />
+        <DayPage selectedDate={selectedDate} backHandler={() => setSelectedDate(null)} submitHandler={handleSubmit} />
       </ColumnContainer>
       <Calendar setSelectedDate={calendarDateSelectHandler} isVisible={!selectedDate}/>
     </ScrollableContainer>
