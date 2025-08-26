@@ -1,3 +1,4 @@
+//2025-08-26 : added expandHandler, improved placeholder meal ingredient logic
 //2025-08-25 : Meal Form expands to show meal ingredients
 //2025-08-23 : Meal Form now only contains text input
 //2025-08-19 : Meal Form now has handling for edit and delete buttons
@@ -17,7 +18,18 @@ export default function MealForm({ submitHandler, meal, index }: { submitHandler
     const [isExpanded, setIsExpanded] = useState(false);
 
     useEffect(() => {
-        setEditedMeal({ ...meal, Meal_Ingredients: [...(meal.Meal_Ingredients || []), { Ingredient_Name: "" }] });
+        //possibilities for incoming meal, which is trimmed by MealsContainer
+        //Name is blank and has no ingredients => don't add in a placeholder ingredient
+        //Name is blank and has ingredients => add a placeholder ingredient
+        //Name is not blank and has no ingredients => add a placeholder ingredient
+        //Name is not blank and has ingredients => add a placeholder ingredient
+        if(meal.Meal_Name === "" && (meal.Meal_Ingredients || []).length === 0) {
+            setEditingMealName(true);
+            setEditedMeal(meal);
+        }
+        else{
+            setEditedMeal({ ...meal, Meal_Ingredients: [...(meal.Meal_Ingredients || []), { Ingredient_Name: "" }] });
+        }
     }, [meal]);
 
     const rotateString = isExpanded ? "90deg" : "0deg";
@@ -27,11 +39,7 @@ export default function MealForm({ submitHandler, meal, index }: { submitHandler
     };
     
     const handleFinishEditingName = () => {
-        if(editedMeal.Meal_Name.trim() === "") {
-            setEditingMealName(true);
-        } else {
-            setEditingMealName(false);
-        }
+        setEditingMealName(false);
         submitHandler(editedMeal, index);
     };
 
@@ -49,14 +57,19 @@ export default function MealForm({ submitHandler, meal, index }: { submitHandler
         setEditingMealName(true);
     };
 
+    const expandHandler = () => {
+        if (editedMeal.Meal_Ingredients && editedMeal.Meal_Ingredients.length > 0) // Check if there are ingredients
+            setIsExpanded(!isExpanded);
+    };
+
     return (
         <ColumnContainer >
             <Pressable 
-                onPress={() => setIsExpanded(meal.Meal_Name !== "" && !isExpanded)/*Always set to false if the meal name is empty*/}
+                onPress={expandHandler}
                 onLongPress={longPressHandler}
             >
                 <RowContainer style={{justifyContent: "flex-start"}}>
-                    {meal.Meal_Name !== "" || (meal.Meal_Ingredients && meal.Meal_Ingredients.length > 0) ? 
+                    {editedMeal.Meal_Ingredients && editedMeal.Meal_Ingredients.length > 0 ? 
                         <StyledText style={{fontSize:32, transform:[{rotate:rotateString}]}}>{"\u203A"}</StyledText> : 
                         null}
                     {editingMealName ?
@@ -68,14 +81,12 @@ export default function MealForm({ submitHandler, meal, index }: { submitHandler
                             onFinishEditing={handleFinishEditingName}
                             onChangeText={handleChangeMealName}
                             aria-label={`Meal Name Input ${index + 1}`}
-                            placeholder='Enter meal name'
-                            autoFocus={true}
+                            placeholder='Enter meal name...'
                         /> : 
                         <StyledText
                             style={{flex: 1,
                                 fontSize: 15,
                             }}
-
                             aria-label={`Meal Name Text ${index + 1}`}
                         >{meal.Meal_Name}</StyledText>
                     }
@@ -85,13 +96,14 @@ export default function MealForm({ submitHandler, meal, index }: { submitHandler
             {
                 editedMeal.Meal_Ingredients?.map((ingredient, idx) =>
                     <RowContainer key={`ingredient-${index}-${idx}`}>
+                        <StyledText>{"\u2022"}</StyledText>
                         <StyledTextInput
                             style={{ flex: 1 }}
                             defaultValue={ingredient.Ingredient_Name}
                             onFinishEditing={handleFinishEditingIngredient}
                             onChangeText={(text) => handleChangeIngredientText(text, idx)}
                             aria-label={`Ingredient Name Text Input ${idx + 1}`}
-                            placeholder='Enter ingredient name'
+                            placeholder='Enter ingredient name...'
                         />
                     </RowContainer>
                 )
