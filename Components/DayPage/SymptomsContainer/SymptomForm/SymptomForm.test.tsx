@@ -1,3 +1,4 @@
+//2025-08-26 : Added symptom description field back in
 //2025-08-23 : Symptom form now contains only text input
 //2025-06-05 : Symptom form now actually has some text input, tested
 //2025-06-04 : Initial Commit with placeholder implementation
@@ -12,7 +13,7 @@ describe('SymptomForm', () => {
     expect(getByLabelText(/Symptom Name Input 1/i)).toBeTruthy();
     expect(getByLabelText(/Symptom Name Input 1/i)).toHaveDisplayValue(testSymptom.Symptom_Name);
   });
-  it.skip("renders symptom description text input", () => {
+  it("renders symptom description text input", () => {
     const { getByLabelText } = render(<SymptomForm submitHandler={jest.fn()} symptom={testSymptom} index={0} />);
     expect(getByLabelText(/Symptom Description Input 1/i)).toBeTruthy();
     expect(getByLabelText(/Symptom Description Input 1/i)).toHaveDisplayValue(testSymptom.Symptom_Description);
@@ -32,7 +33,7 @@ describe('SymptomForm handles', () => {
     // Check if the input field value has changed
     expect(getByLabelText(/Symptom Name Input 1/i)).toHaveDisplayValue("HeadacheHeadache");
   });
-  it.skip("description input field changes", async () => {
+  it("description input field changes", async () => {
     const user = userEvent.setup();
     const { getByLabelText } = render(<SymptomForm submitHandler={jest.fn()} symptom={testSymptom} index={0} />);
     const symptomDescriptionInput = getByLabelText(/Symptom Description Input 1/i);
@@ -42,6 +43,6 @@ describe('SymptomForm handles', () => {
     await user.type(symptomDescriptionInput, 'Mild headache in the evening');
 
     // Check if the input field value has changed
-    expect(getByLabelText(/Symptom Description Input 1/i)).toHaveDisplayValue("Mild headache in the evening");
+    expect(getByLabelText(/Symptom Description Input 1/i)).toHaveDisplayValue("Mild headache in the eveningMild headache in the evening");
   });
 })
