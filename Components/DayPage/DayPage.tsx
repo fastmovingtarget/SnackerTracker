@@ -1,3 +1,4 @@
+//2025-08-26 : DayPage changed submitHandler to handleSubmit
 //2025-08-23 : Creating a container for the day's symptoms and meals
 import React, {useEffect, useState} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
@@ -8,7 +9,7 @@ import type Symptom from '../../Types/Symptom';
 import type TrackerDay from '../../Types/TrackerDay';
 import MealsContainer from './MealsContainer/MealsContainer';
 
-export default function DayPage({selectedDate, backHandler, handleSubmit} : {selectedDate: TrackerDay | null, backHandler : () => void, index?: number, handleSubmit: (day : TrackerDay) => void}) {
+export default function DayPage({selectedDate, backHandler, submitHandler} : {selectedDate: TrackerDay | null, backHandler : () => void, index?: number, submitHandler: (day : TrackerDay) => void}) {
 
   const handleSubmitMeal = (submitArray : Meal[]) => {
     if (selectedDate) {
@@ -16,7 +17,7 @@ export default function DayPage({selectedDate, backHandler, handleSubmit} : {sel
             ...selectedDate,
             Meals:[...submitArray]
         };
-        handleSubmit(updatedTrackerDay);
+        submitHandler(updatedTrackerDay);
     }
   };
   
@@ -26,7 +27,7 @@ export default function DayPage({selectedDate, backHandler, handleSubmit} : {sel
             ...selectedDate,
             Symptoms:[...submitArray]
         };
-        handleSubmit(updatedTrackerDay);
+        submitHandler(updatedTrackerDay);
     }
   };
 
