@@ -1,3 +1,4 @@
+//2025-08-27 : Adding Colour theme export/import
 //2025-08-26 : DayPage changed submitHandler to handleSubmit
 //2025-08-23 : Creating a container for the day's symptoms and meals
 import React, {useEffect, useState} from 'react';
@@ -41,11 +42,13 @@ export default function DayPage({selectedDate, backHandler, submitHandler} : {se
             {"Back to Calendar"}
           </StyledText>
         </PressableContainer>
-        <StyledText style={{textAlign: "center", fontSize: 18}}>
-          {selectedDate ? `${selectedDate.Date.toLocaleDateString()}` : "No date selected"}
-        </StyledText>
-          <MealsContainer onSubmit={handleSubmitMeal} meals={selectedDate?.Meals || []}/>
-          <SymptomsContainer onSubmit={handleSubmitSymptom} symptoms={selectedDate?.Symptoms || []}/>
+        <RowContainer>
+          <StyledText style={{textAlign: "center", fontSize: 18, width: "100%"}}>
+            {selectedDate ? `${selectedDate.Date.toLocaleDateString()}` : "No date selected"}
+          </StyledText>
+        </RowContainer>
+        <MealsContainer onSubmit={handleSubmitMeal} meals={selectedDate?.Meals || []}/>
+        <SymptomsContainer onSubmit={handleSubmitSymptom} symptoms={selectedDate?.Symptoms || []}/>
       </ColumnContainer>
     </ScrollableContainer>
   );

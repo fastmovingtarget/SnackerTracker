@@ -1,9 +1,11 @@
+//2025-08-27 : Adding Colour theme export/import
 //2025-08-19 : Adding in a Button custom component
 import {Pressable, Image} from "react-native";
 import type { PropsWithChildren } from "react";
 import type { ViewStyle, AccessibilityProps, ImageStyle, ImageComponent } from "react-native";
 import React from "react";
 import StyledText from "./StyledText"; // Assuming StyledText is defined in the same directory
+import {Colours} from "../Constants/Colours";
 
 type ButtonProps = PropsWithChildren<{
     style? : ViewStyle, 
@@ -40,7 +42,7 @@ const pressableContainerStyles = {
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#272727",
+    backgroundColor: Colours.Secondary,
     borderColor: "#111111",
     borderStyle: "solid",
     borderRadius: 5,

@@ -1,3 +1,4 @@
+//2025-08-27 : Adding Colour theme export/import
 //2025-08-26 : added expandHandler, improved placeholder meal ingredient logic
 //2025-08-25 : Meal Form expands to show meal ingredients
 //2025-08-23 : Meal Form now only contains text input
@@ -68,37 +69,45 @@ export default function MealForm({ submitHandler, meal, index }: { submitHandler
                 onPress={expandHandler}
                 onLongPress={longPressHandler}
             >
-                <RowContainer style={{justifyContent: "flex-start"}}>
+                <RowContainer style={{justifyContent: "flex-start", padding:0}}>
                     {editedMeal.Meal_Ingredients && editedMeal.Meal_Ingredients.length > 0 ? 
-                        <StyledText style={{fontSize:32, transform:[{rotate:rotateString}]}}>{"\u203A"}</StyledText> : 
+                        <StyledText style={{fontSize:20, fontWeight:"bold", transform:[{rotate:rotateString}], paddingVertical:0}}>{"\u203A"}</StyledText> : 
                         null}
                     {editingMealName ?
                         <StyledTextInput 
                             style={{flex: 1,
                                 fontSize: 15,
+                                padding:5
                             }}
                             defaultValue={meal.Meal_Name}
                             onFinishEditing={handleFinishEditingName}
                             onChangeText={handleChangeMealName}
                             aria-label={`Meal Name Input ${index + 1}`}
-                            placeholder='Enter meal name...'
+                            placeholder='Enter a meal name...'
                         /> : 
                         <StyledText
                             style={{flex: 1,
                                 fontSize: 15,
+                                padding:0
                             }}
                             aria-label={`Meal Name Text ${index + 1}`}
                         >{meal.Meal_Name}</StyledText>
                     }
                 </RowContainer>
             </Pressable>
-            <ColumnContainer style={{ display: isExpanded ? "flex" : "none" }}>
+            <ColumnContainer style={{ display: isExpanded ? "flex" : "none", padding:0 }}>
             {
                 editedMeal.Meal_Ingredients?.map((ingredient, idx) =>
-                    <RowContainer key={`ingredient-${index}-${idx}`}>
-                        <StyledText>{"\u2022"}</StyledText>
+                    <RowContainer key={`ingredient-${index}-${idx}`} style={{padding:0}}>
+                        <StyledText style={{
+                                fontSize: 15,
+                                paddingVertical: 0
+                            }}>{"\u2022"}</StyledText>
                         <StyledTextInput
-                            style={{ flex: 1 }}
+                            style={{ flex: 1,
+                                fontSize: 15,
+                                paddingVertical: 2
+                            }}
                             defaultValue={ingredient.Ingredient_Name}
                             onFinishEditing={handleFinishEditingIngredient}
                             onChangeText={(text) => handleChangeIngredientText(text, idx)}

@@ -1,9 +1,12 @@
+//2025-08-27 : Adding Colour theme export/import
 //2025-08-25 : Meal Form expands to show meal ingredients
 //2025-08-23 : Added handling for finishing editing
 //2025-06-05 : Simple implementation for containers
 import {Text, TextInput, NativeSyntheticEvent, TextInputSubmitEditingEventData} from "react-native";
 import type { PropsWithChildren } from "react";
 import type { TextInputChangeEventData, TextStyle} from "react-native";
+import {Colours} from "../Constants/Colours";
+import { C } from "vitest/dist/chunks/reporters.6vxQttCV.js";
 
 type InputTextProps = {
     style?: TextStyle,
@@ -35,7 +38,7 @@ const StyledTextInput = ({style, children, defaultValue = "", inputMode = "text"
             onChangeText={onChangeText}
             aria-label={ariaLabel}
             placeholder={placeholder}
-            placeholderTextColor={"#e3dccf"}
+            placeholderTextColor={Colours.SecondaryText}
             multiline={multiline}
             numberOfLines={numberOfLines}
             onBlur={onFinishEditing}
@@ -53,8 +56,8 @@ const inputTextStyles = {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        backgroundColor: "#111111",
-        color: "#e3dccf",
+        backgroundColor: Colours.Secondary,
+        color: Colours.SecondaryText,
         borderRadius: 5,
         textAlignVertical: "center",
         width: "70%",

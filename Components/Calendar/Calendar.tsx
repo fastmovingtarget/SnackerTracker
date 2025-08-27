@@ -1,3 +1,4 @@
+//2025-08-27 : Adding Colour theme export/import
 //2025-06-13 : Splitting calendar into specific rows rather than overflowing a single row
 //2025-06-05 : Implementing and testing a full calendar visual
 //2025-06-04 : Initial Commit with placeholder implementation
@@ -7,6 +8,7 @@ import StyledText from '../../CustomComponents/StyledText';
 import ColumnContainer from '../../CustomComponents/ColumnContainer';
 import RowContainer from '../../CustomComponents/RowContainer';
 import PressableContainer from '../../CustomComponents/PressableContainer';
+import { Colours } from '../../Constants/Colours';
 
 export default function Calendar({ setSelectedDate, isVisible }: { setSelectedDate: (date: Date) => void, isVisible: boolean }) {
     
@@ -61,10 +63,10 @@ export default function Calendar({ setSelectedDate, isVisible }: { setSelectedDa
                         {week.map((date, dateIndex) => (
                             <PressableContainer 
                                 key={`date-${weekIndex}-${dateIndex}`} 
-                                style={{margin: 3, padding: 0, backgroundColor: '#000000', flex:1 }} 
+                                style={{margin: 3, padding: 0, flex:1 }} 
                                 onPress={() => setSelectedDate(date)}
                             >
-                                <StyledText style={{ padding:0, margin:0, textAlign: 'center', color: date.getMonth() === monthStartDate.getMonth() ? 'white' : 'gray' }}>
+                                <StyledText style={{ padding:0, margin:0, textAlign: 'center', color: date.getMonth() === monthStartDate.getMonth() ? Colours.Text : 'gray' }}>
                                     {date.getDate()}
                                 </StyledText>
                             </PressableContainer>
