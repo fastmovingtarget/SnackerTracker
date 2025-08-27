@@ -1,3 +1,4 @@
+//2025-08-27 : Minor visual formatting changes
 //2025-06-13 : Tests for date selection and visibility changes
 //2025-06-05 : Implementing and testing a full calendar visual
 //2025-06-04 : Initial Commit with placeholder implementation
@@ -7,7 +8,6 @@ import Calendar from './Calendar';
 
 const mockDataContext = {
 };
-
 
 beforeEach(() => {
   jest.resetAllMocks();
