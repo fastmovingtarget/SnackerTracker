@@ -1,8 +1,10 @@
+//2025-08-27 : Adding in a titled container for each section
 //2025-08-25 : Displayed meals fixed to change when date is changed
 //2025-08-23 : Container for the meal input forms
 import Meal from '../../../Types/Meal';
 import React from 'react';
 import MealForm from './MealForm/MealForm';
+import TitledContainer from '../../../CustomComponents/TitledContainer';
 
 export default function MealsContainer({ meals, onSubmit }: { meals: Meal[], onSubmit: (newMeals: (Meal[])) => void }) {
 
@@ -27,10 +29,10 @@ export default function MealsContainer({ meals, onSubmit }: { meals: Meal[], onS
     };
 
     return (
-        <>
+        <TitledContainer title="Meals">
             {displayMeals.map((meal, index) => (
                 <MealForm key={index} meal={meal} index={index} submitHandler={submitHandler} />
             ))}
-        </>
+        </TitledContainer>
     );
 }

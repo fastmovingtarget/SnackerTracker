@@ -1,7 +1,9 @@
+//2025-08-27 : Adding in a titled container for each section
 //2025-08-23 : Container for the symptom input forms
 import Symptom from '../../../Types/Symptom';
 import React from 'react';
 import SymptomForm from './SymptomForm/SymptomForm';
+import TitledContainer from '../../../CustomComponents/TitledContainer';
 
 export default function SymptomsContainer({ symptoms, onSubmit }: { symptoms: Symptom[], onSubmit: (newSymptoms: (Symptom[])) => void }) {
 
@@ -20,10 +22,10 @@ export default function SymptomsContainer({ symptoms, onSubmit }: { symptoms: Sy
     };
 
     return (
-        <>
+        <TitledContainer title="Symptoms">
             {displaySymptoms.map((symptom, index) => (
                 <SymptomForm key={index} symptom={symptom} index={index} submitHandler={submitHandler} />
             ))}
-        </>
+        </TitledContainer>
     );
 }
