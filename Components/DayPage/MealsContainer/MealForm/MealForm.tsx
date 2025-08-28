@@ -1,3 +1,4 @@
+//2025-08-28 : Fixed meal name switching to editing when date is re-clicked
 //2025-08-27 : Adding Colour theme export/import
 //2025-08-26 : added expandHandler, improved placeholder meal ingredient logic
 //2025-08-25 : Meal Form expands to show meal ingredients
@@ -29,6 +30,7 @@ export default function MealForm({ submitHandler, meal, index }: { submitHandler
             setEditedMeal(meal);
         }
         else{
+            setEditingMealName(false);
             setEditedMeal({ ...meal, Meal_Ingredients: [...(meal.Meal_Ingredients || []), { Ingredient_Name: "" }] });
         }
     }, [meal]);
