@@ -1,3 +1,4 @@
+//2025-08-28 : Added a clearStorage function for testing, removed error flag when empty
 //2025-08-26 : Day Page call now uses submitHandler rather than handleSubmit
 //2025-08-23 : Home now uses the DayPage container
 //2025-08-19 : Added Loading and Saving data to local storage
@@ -11,12 +12,11 @@ import { StyleSheet, Text, View } from 'react-native';
 import Calendar from './Calendar/Calendar';
 import { ColumnContainer, ScrollableContainer } from '../CustomComponents/CustomComponents';
 import type TrackerDay from '../Types/TrackerDay';
-import {writeToStorage, readFromStorage} from '../Functions/StorageFunctions';
+import {writeToStorage, readFromStorage, clearStorage} from '../Functions/StorageFunctions';
 import DayPage from './DayPage/DayPage';
 
 export default function Home() {
 
-  const [focusForm, setFocusForm] = useState<"Meal" | "Symptom" | null>(null);
   const [trackerData, setTrackerData] = useState<TrackerDay[]>([]); // Placeholder for tracker data
 
   const [selectedDate, setSelectedDate] = useState<TrackerDay | null>(null);
