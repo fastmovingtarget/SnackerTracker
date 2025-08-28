@@ -1,13 +1,18 @@
+//2025-08-28 : Symptoms container now updates when selected date is changed
 //2025-08-27 : Adding in a titled container for each section
 //2025-08-23 : Container for the symptom input forms
 import Symptom from '../../../Types/Symptom';
-import React from 'react';
+import React, { useEffect } from 'react';
 import SymptomForm from './SymptomForm/SymptomForm';
 import TitledContainer from '../../../CustomComponents/TitledContainer';
 
 export default function SymptomsContainer({ symptoms, onSubmit }: { symptoms: Symptom[], onSubmit: (newSymptoms: (Symptom[])) => void }) {
 
     const [displaySymptoms, setDisplaySymptoms] = React.useState<Symptom[]>([...symptoms, {Symptom_Name: ''}]); // Add an empty Symptom for new entries
+
+    useEffect(() => {
+        setDisplaySymptoms([...symptoms, {Symptom_Name: ''}]);
+    }, [symptoms]);
 
     const submitHandler = (newSymptom: Symptom, index: number) => {
         let updatedSymptoms = [...displaySymptoms];
