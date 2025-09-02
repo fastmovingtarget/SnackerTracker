@@ -1,3 +1,4 @@
+//2025-09-02 : Minor Style Changes
 //2025-08-27 : Adding Colour theme export/import
 //2025-06-05 : Simple implementation for containers
 import {Pressable} from "react-native";
@@ -30,12 +31,14 @@ const PressableContainer : React.FC<PressableContainerProps> = ({style, children
 
 const pressableContainerStyles = {
     display: "flex",
+    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: Colours.Secondary,
-    borderColor: "#111111",
+    borderColor: Colours.Text,
     borderStyle: "solid",
     borderRadius: 5,
+    borderWidth: 1,
 } as ViewStyle;
 
 

@@ -1,3 +1,4 @@
+//2025-09-02 : Minor Style Changes
 //2025-08-27 : Adding Colour theme export/import
 //2025-06-11 : Removing flex value as a default
 //2025-06-04 : Simple implementation for containers
@@ -29,11 +30,12 @@ const columnContainerStyles = {
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+    width: "100%",
     backgroundColor: Colours.Primary,
     color: Colours.Text,
     borderRadius: 10,
-    padding: 10,
-    margin: 5,
+    padding: 0,
+    margin: 0,
 } as ViewStyle;
 
 
