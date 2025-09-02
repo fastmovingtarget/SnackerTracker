@@ -1,3 +1,4 @@
+//2025-09-02 : Shrunk the arrows a little bit
 //2025-08-27 : Minor visual formatting changes
 //2025-06-13 : Tests for date selection and visibility changes
 //2025-06-05 : Implementing and testing a full calendar visual
@@ -13,7 +14,7 @@ beforeEach(() => {
   jest.resetAllMocks();
 });
 
-const monthsOfYear = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const monthsOfYear = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sept", "Oct", "Nov", "Dec"];
 
 describe("Recipe Plan Calendar Renders", () => {
     test("The month correctly", () => {

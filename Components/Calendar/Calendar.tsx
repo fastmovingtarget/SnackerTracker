@@ -1,3 +1,4 @@
+//2025-09-02 : Shrunk the arrows a little bit
 //2025-08-27 : Adding Colour theme export/import
 //2025-06-13 : Splitting calendar into specific rows rather than overflowing a single row
 //2025-06-05 : Implementing and testing a full calendar visual
@@ -34,16 +35,16 @@ export default function Calendar({ setSelectedDate, isVisible }: { setSelectedDa
     return (
         <ColumnContainer style={{display: isVisible ? 'flex' : 'none', height: "50%", padding:0, margin:0, alignItems: 'center'}}>
             <RowContainer>
-                <PressableContainer onPress={() => setMonthIndex(monthIndex - 1)} style={{ paddingHorizontal: 18, paddingBottom: 5, borderRadius:32}}>
-                    <StyledText style={{ fontSize:30}}>
+                <PressableContainer onPress={() => setMonthIndex(monthIndex - 1)} style={{ paddingHorizontal: 20, paddingVertical: 20, borderRadius:25, height: "0%", width:"0%"}}>
+                    <StyledText style={{ fontSize:30, position: 'absolute', top: -12, left: 5 }}>
                         {'\u2039'}
                     </StyledText>
                 </PressableContainer>
-                    <StyledText style={{ flex: 1, fontSize:30, margin:0, padding:0, textAlign: 'center', borderRadius:0 }}>
+                    <StyledText style={{ flex: 1, fontSize:25, margin:0, padding:0, textAlign: 'center', borderRadius:0 }}>
                         {monthStartDate.toLocaleString('default', { month: 'short' })}
                     </StyledText>
-                <PressableContainer onPress={() => setMonthIndex(monthIndex + 1)} style={{ paddingHorizontal: 18, paddingBottom: 5, borderRadius:32}}>
-                    <StyledText style={{ fontSize:30,borderRadius:0 }}>
+                <PressableContainer onPress={() => setMonthIndex(monthIndex + 1)} style={{ paddingHorizontal: 20, paddingVertical: 20, borderRadius:25, height: "0%", width:"0%"}}>
+                    <StyledText style={{ fontSize:30, position: 'absolute', top: -12, left: 5 }}>
                         {'\u203A'}
                     </StyledText>
                 </PressableContainer>
