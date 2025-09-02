@@ -1,7 +1,8 @@
+//2025-09-02 : Editable text now switches between text and text input again
 //2025-08-23 : Editable text changed to be a glorified text input
 //2025-08-19 : Wrapper and styles for Editable Text Component
 import {Pressable, View} from "react-native";
-import { useState, type PropsWithChildren } from "react";
+import { useState, useEffect, type PropsWithChildren } from "react";
 import type { ViewStyle } from "react-native";
 import RowContainer from "./RowContainer";
 import PressableContainer from "./PressableContainer";
@@ -13,24 +14,39 @@ type EditableTextProps = {
     containerStyle?: ViewStyle,
     text:string,
     placeholder?: string,
-    onChangeText: (newText: string) => void,
-    onFinishEditing: () => void,
-    ["aria-label"]?:string
+    onFinishEditing: (text :string) => void,
+    ["aria-label"]?:string,
+    isEditing: boolean,
+    autoFocus?: boolean
 }
 
-const EditableText = ({containerStyle, text, placeholder, onChangeText, onFinishEditing, 'aria-label' : ariaLabel} : PropsWithChildren<EditableTextProps>) => {
-
+const EditableText = ({text, placeholder, onFinishEditing, 'aria-label' : ariaLabel, isEditing = false, autoFocus = true} : PropsWithChildren<EditableTextProps>) => {
     return (
-        <RowContainer style={containerStyle}>
+        <>
+            {isEditing ? (
             <StyledTextInput
-                style={{flex: 1, textAlign: "center"}}
+                    style={{
+                        flex: 1,
+                        fontSize: 15,
+                        padding: 5,
+                        margin: 0
+                    }}
                 aria-label={`${ariaLabel || ""} Input`}
                 placeholder={placeholder}
                 defaultValue={text}
-                onChangeText={(newText) => onChangeText(newText)}
                 onFinishEditing={onFinishEditing}
-            />          
-        </RowContainer>
+                autoFocus={autoFocus}
+            />
+            ) : (
+            <StyledText
+                style={{flex: 1,
+                    fontSize: 15,
+                    padding:5,
+                    margin: 0
+                }}
+                aria-label={`${ariaLabel || ""} Text`}
+            >{text}</StyledText>)}
+        </>
     );
 }
 
