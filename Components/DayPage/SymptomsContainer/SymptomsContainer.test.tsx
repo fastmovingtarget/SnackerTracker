@@ -1,3 +1,4 @@
+//2025-09-02 : Moved new symptom name form from SymptomForm
 //2025-08-26 : Fixed mock symptom form
 //2025-08-23 : Container for the symptom input forms
 
@@ -41,20 +42,10 @@ describe('SymptomsContainer Component Renders', () => {
       symptom: { Symptom_Name: 'Fatigue' }
     }), undefined);
   })
-  it("blank symptom form when other symptoms are provided", () => {
-    render(<SymptomsContainer onSubmit={jest.fn()} symptoms={[{Symptom_Name:'Headache'}, {Symptom_Name:'Nausea'}, {Symptom_Name:'Fatigue'}]} />);
+  it("new symptom input", () => {
+    const { getByLabelText } = render(<SymptomsContainer onSubmit={jest.fn()} symptoms={[]} />);
 
-    expect(SymptomForm).toHaveBeenCalledWith(expect.objectContaining({
-      symptom: { Symptom_Name: '' }
-    }), undefined);
-
-  });
-  it("Only blank symptom form when no symptoms are provided", () => {
-    render(<SymptomsContainer onSubmit={jest.fn()} symptoms={[]} />);
-
-    expect(SymptomForm).toHaveBeenCalledWith(expect.objectContaining({
-      symptom: { Symptom_Name: '' }
-    }), undefined);
+    expect(getByLabelText(/New Symptom Name Input/i)).toBeTruthy();
   });
 });
 describe('SymptomsContainer Component Functionality', () => {
@@ -77,9 +68,6 @@ describe('SymptomsContainer Component Functionality', () => {
     }), undefined);
     expect(SymptomForm as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({
       symptom: { Symptom_Name: 'Nausea' }
-    }), undefined);
-    expect(SymptomForm as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({
-      symptom: { Symptom_Name: '' }
     }), undefined);
   });
   it("submits updated symptoms", async () => {
@@ -107,9 +95,6 @@ describe('SymptomsContainer Component Functionality', () => {
     expect(SymptomForm as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({
       symptom: { Symptom_Name: 'Nausea' }
     }), undefined);
-    expect(SymptomForm as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({
-      symptom: { Symptom_Name: '' }
-    }), undefined);
   });
   it("trims blank Symptoms", async () => {
     const user = userEvent.setup();
@@ -132,8 +117,16 @@ describe('SymptomsContainer Component Functionality', () => {
     expect(SymptomForm as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({
       symptom: { Symptom_Name: 'Headache' }
     }), undefined);
-    expect(SymptomForm as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({
-      symptom: { Symptom_Name: '' }
-    }), undefined);
+  });
+  it("submits new symptom", async () => {
+    const user = userEvent.setup();
+    const mockOnSubmit = jest.fn();
+    const { getByLabelText, getByText } = render(<SymptomsContainer onSubmit={mockOnSubmit} symptoms={[]} />);
+
+    await user.type(getByLabelText(/New Symptom Name Input/i), "Dizziness");
+
+    expect(mockOnSubmit).toHaveBeenCalledWith([
+      { Symptom_Name: 'Dizziness', Symptom_Description: '' }
+    ]);
   });
 });
