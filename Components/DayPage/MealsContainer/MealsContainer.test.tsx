@@ -1,3 +1,4 @@
+//2025-09-02 : Added New Meal input from MealForm
 //2025-08-23 : Container for the meal input forms
 
 
@@ -38,21 +39,6 @@ describe('MealsContainer Component Renders', () => {
       meal: { Meal_Name: 'Dinner' }
     }), undefined);
   })
-  it("blank meal form when other meals are provided", () => {
-    render(<MealsContainer onSubmit={jest.fn()} meals={[{Meal_Name:'Breakfast'}, {Meal_Name:'Lunch'}, {Meal_Name:'Dinner'}]} />);
-
-    expect(MealForm).toHaveBeenCalledWith(expect.objectContaining({
-      meal: { Meal_Name: '' }
-    }), undefined);
-
-  });
-  it("Only blank meal form when no meals are provided", () => {
-    render(<MealsContainer onSubmit={jest.fn()} meals={[]} />);
-
-    expect(MealForm).toHaveBeenCalledWith(expect.objectContaining({
-      meal: { Meal_Name: '' }
-    }), undefined);
-  });
 });
 describe('MealsContainer Component Functionality', () => {
   it("submits meals", async () => {
@@ -74,9 +60,6 @@ describe('MealsContainer Component Functionality', () => {
     }), undefined);
     expect(MealForm as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({
       meal: { Meal_Name: 'Lunch' }
-    }), undefined);
-    expect(MealForm as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({
-      meal: { Meal_Name: '' }
     }), undefined);
   });
   it("submits updated meals", async () => {
@@ -104,9 +87,6 @@ describe('MealsContainer Component Functionality', () => {
     expect(MealForm as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({
       meal: { Meal_Name: 'Lunch' }
     }), undefined);
-    expect(MealForm as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({
-      meal: { Meal_Name: '' }
-    }), undefined);
   });
   it("trims blank meals", async () => {
     const user = userEvent.setup();
@@ -129,8 +109,22 @@ describe('MealsContainer Component Functionality', () => {
     expect(MealForm as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({
       meal: { Meal_Name: 'Breakfast' }
     }), undefined);
-    expect(MealForm as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({
-      meal: { Meal_Name: '' }
-    }), undefined);
+  });
+});
+describe("Meal container add new meal input", () =>{
+  it("renders new meal input", () => {
+    const { getByLabelText } = render(<MealsContainer onSubmit={jest.fn()} meals={[]} />);
+    expect(getByLabelText(/New Meal Name Input/i)).toBeTruthy();
+  });
+  it("submits new meal input", async () => {
+    const user = userEvent.setup();
+    const mockOnSubmit = jest.fn();
+    const { getByLabelText } = render(<MealsContainer onSubmit={mockOnSubmit} meals={[]} />);
+
+    await user.type(getByLabelText(/New Meal Name Input/i), 'Dinner');
+
+    expect(mockOnSubmit).toHaveBeenCalledWith([
+      { Meal_Name: 'Dinner', Meal_Ingredients: [] }
+    ]);
   });
 });
