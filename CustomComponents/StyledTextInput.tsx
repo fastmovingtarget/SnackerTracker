@@ -1,3 +1,4 @@
+//2025-09-04 : Changed input text colour to primary text
 //2025-09-02 : Handle changes to text within component
 //2025-08-27 : Adding Colour theme export/import
 //2025-08-25 : Meal Form expands to show meal ingredients
@@ -72,7 +73,7 @@ const inputTextStyles = {
         justifyContent: "space-between",
         alignItems: "center",
         backgroundColor: Colours.Secondary,
-        color: Colours.SecondaryText,
+        color: Colours.Text,
         borderRadius: 5,
         textAlignVertical: "center",
         width: "70%",
