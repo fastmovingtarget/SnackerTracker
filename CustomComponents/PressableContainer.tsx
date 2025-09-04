@@ -1,3 +1,4 @@
+//2025-09-04 : Change to border colour
 //2025-09-02 : Minor Style Changes
 //2025-08-27 : Adding Colour theme export/import
 //2025-06-05 : Simple implementation for containers
@@ -35,7 +36,7 @@ const pressableContainerStyles = {
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: Colours.Secondary,
-    borderColor: Colours.Text,
+    borderColor: Colours.Accent,
     borderStyle: "solid",
     borderRadius: 5,
     borderWidth: 1,
