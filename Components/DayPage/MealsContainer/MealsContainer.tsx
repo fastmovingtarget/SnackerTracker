@@ -1,3 +1,4 @@
+//2025-09-04 : Changes to submit/render logic
 //2025-09-02 : Added New Meal input from MealForm
 //2025-08-27 : Adding in a titled container for each section
 //2025-08-25 : Displayed meals fixed to change when date is changed
@@ -7,18 +8,14 @@ import React from 'react';
 import MealForm from './MealForm/MealForm';
 import TitledContainer from '../../../CustomComponents/TitledContainer';
 import StyledTextInput from '../../../CustomComponents/StyledTextInput';
+import { useTrackerArray } from '../../../Contexts/TrackerContext';
 import RowContainer from '../../../CustomComponents/RowContainer';
 
-export default function MealsContainer({ meals, onSubmit }: { meals: Meal[], onSubmit: (newMeals: (Meal[])) => void }) {
-
-    const [displayMeals, setDisplayMeals] = React.useState<Meal[]>([...meals]); // Add an empty meal for new entries
-
-    React.useEffect(() => {
-        setDisplayMeals([...meals]);
-    }, [meals]);
+export default function MealsContainer() {
+    const { selectedDate, handleSubmit } = useTrackerArray();
 
     const submitHandler = (newMeal: Meal, index: number) => {
-        let updatedMeals = [...displayMeals];
+        let updatedMeals = [...selectedDate?.Meals || []];
 
         newMeal.Meal_Ingredients = newMeal.Meal_Ingredients?.filter(ingredient => ingredient.Ingredient_Name.trim() !== ''); // Remove empty ingredients
 
@@ -26,9 +23,7 @@ export default function MealsContainer({ meals, onSubmit }: { meals: Meal[], onS
 
         updatedMeals = updatedMeals.filter(meal => meal.Meal_Name !== '' || (meal.Meal_Ingredients && meal.Meal_Ingredients.length > 0));// Remove empty meals
 
-        onSubmit(updatedMeals);
-
-        setDisplayMeals([...updatedMeals]);
+        handleSubmit({...selectedDate, Meals: updatedMeals});
     };
 
     const submitNewMealHandler = (newMealName: string) => {
@@ -38,13 +33,12 @@ export default function MealsContainer({ meals, onSubmit }: { meals: Meal[], onS
             Meal_Name: newMealName,
             Meal_Ingredients: []
         };
-        onSubmit([...displayMeals, newMeal]);
-        setDisplayMeals([...displayMeals, newMeal]);
+        handleSubmit({...selectedDate, Meals: [...selectedDate?.Meals || [], newMeal]});
     };
 
     return (
         <TitledContainer title="Meals">
-            {displayMeals.map((meal, index) => (
+            {selectedDate?.Meals.map((meal, index) => (
                 <MealForm key={index} meal={meal} index={index} submitHandler={submitHandler} />
             ))}
             <RowContainer>
