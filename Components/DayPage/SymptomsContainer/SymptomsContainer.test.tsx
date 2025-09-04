@@ -1,3 +1,4 @@
+//2025-09-04 : Changes to submit logic due to new context
 //2025-09-02 : Moved new symptom name form from SymptomForm
 //2025-08-26 : Fixed mock symptom form
 //2025-08-23 : Container for the symptom input forms
@@ -8,6 +9,15 @@ import { Text, Pressable } from 'react-native';
 import SymptomsContainer from './SymptomsContainer';
 import SymptomForm from './SymptomForm/SymptomForm';
 import Symptom from '../../../Types/Symptom';
+import {useTrackerArray} from '../../../Contexts/TrackerContext';
+import { use } from 'react';
+
+jest.mock("../../../Contexts/TrackerContext", () => {
+  return {
+    __esModule: true,
+    useTrackerArray: jest.fn(),
+  }
+});
 
 jest.mock("./SymptomForm/SymptomForm", () => {
   return {
@@ -25,12 +35,15 @@ beforeEach(() => {
       </Pressable>
     );
   });
+  (useTrackerArray as jest.Mock).mockReturnValue({
+    selectedDate: { Date: new Date("2025-08-19"), Meals: [], Symptoms: [{Symptom_Name:'Headache'}, {Symptom_Name:'Nausea'}], Notes: '' },
+    handleSubmit: jest.fn()
+  });
 });
 
 describe('SymptomsContainer Component Renders', () => {
   it("existing symptom form components", () => {
-    const mockSymptoms : Symptom[] = [{Symptom_Name:'Headache'}, {Symptom_Name:'Nausea'}, {Symptom_Name:'Fatigue'}];
-    render(<SymptomsContainer onSubmit={jest.fn()} symptoms={mockSymptoms} />);
+    render(<SymptomsContainer />);
 
     expect(SymptomForm).toHaveBeenCalledWith(expect.objectContaining({
       symptom: { Symptom_Name: 'Headache' }
@@ -38,12 +51,9 @@ describe('SymptomsContainer Component Renders', () => {
     expect(SymptomForm).toHaveBeenCalledWith(expect.objectContaining({
       symptom: { Symptom_Name: 'Nausea' }
     }), undefined);
-    expect(SymptomForm).toHaveBeenCalledWith(expect.objectContaining({
-      symptom: { Symptom_Name: 'Fatigue' }
-    }), undefined);
   })
   it("new symptom input", () => {
-    const { getByLabelText } = render(<SymptomsContainer onSubmit={jest.fn()} symptoms={[]} />);
+    const { getByLabelText } = render(<SymptomsContainer />);
 
     expect(getByLabelText(/New Symptom Name Input/i)).toBeTruthy();
   });
@@ -51,24 +61,17 @@ describe('SymptomsContainer Component Renders', () => {
 describe('SymptomsContainer Component Functionality', () => {
   it("submits Symptoms", async () => {
     const user = userEvent.setup();
-    const mockSymptoms: Symptom[] = [{ Symptom_Name: 'Headache' }, { Symptom_Name: 'Nausea' }];
-    const mockOnSubmit = jest.fn();
-    const {getByText} = render(<SymptomsContainer onSubmit={mockOnSubmit} symptoms={mockSymptoms} />);
+    const {getByText} = render(<SymptomsContainer />);
 
     // Simulate filling out the symptom form and submitting
     await user.press(getByText('Headache'));
 
-    expect(mockOnSubmit).toHaveBeenCalledWith([
-      { Symptom_Name: 'Headache' },
-      { Symptom_Name: 'Nausea' }
-    ]);
-
-    expect(SymptomForm as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({
-      symptom: { Symptom_Name: 'Headache' }
-    }), undefined);
-    expect(SymptomForm as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({
-      symptom: { Symptom_Name: 'Nausea' }
-    }), undefined);
+    expect(useTrackerArray().handleSubmit).toHaveBeenCalledWith(expect.objectContaining({
+      Symptoms:[
+        { Symptom_Name: 'Headache' },
+        { Symptom_Name: 'Nausea' }
+      ]
+    }));
   });
   it("submits updated symptoms", async () => {
     const user = userEvent.setup();
@@ -78,23 +81,17 @@ describe('SymptomsContainer Component Functionality', () => {
           <Text>{symptom.Symptom_Name || 'Symptom Form'}</Text>
         </Pressable>
       ));
-    const mockOnSubmit = jest.fn();
-    const {getByText} = render(<SymptomsContainer onSubmit={mockOnSubmit} symptoms={mockSymptoms} />);
+    const {getByText} = render(<SymptomsContainer />);
 
     // Simulate filling out the symptom form and submitting
     await user.press(getByText('Headache'));
 
-    expect(mockOnSubmit).toHaveBeenCalledWith([
-      { Symptom_Name: 'Headachehorrible' },
-      { Symptom_Name: 'Nausea' }
-    ]);
-
-    expect(SymptomForm as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({
-      symptom: { Symptom_Name: 'Headachehorrible' }
-    }), undefined);
-    expect(SymptomForm as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({
-      symptom: { Symptom_Name: 'Nausea' }
-    }), undefined);
+    expect(useTrackerArray().handleSubmit).toHaveBeenCalledWith(expect.objectContaining({
+      Symptoms:[
+        { Symptom_Name: 'Headachehorrible' },
+        { Symptom_Name: 'Nausea' }
+      ]
+    }));
   });
   it("trims blank Symptoms", async () => {
     const user = userEvent.setup();
@@ -104,15 +101,16 @@ describe('SymptomsContainer Component Functionality', () => {
           <Text>{symptom.Symptom_Name || 'Symptom Form'}</Text>
         </Pressable>
       ));
-    const mockOnSubmit = jest.fn();
-    const {getByText} = render(<SymptomsContainer onSubmit={mockOnSubmit} symptoms={mockSymptoms} />);
+    const {getByText} = render(<SymptomsContainer />);
 
     // Simulate filling out the symptom form and submitting
     await user.press(getByText('Nausea'));
 
-    expect(mockOnSubmit).toHaveBeenCalledWith([
-      { Symptom_Name: 'Headache' }
-    ]);
+    expect(useTrackerArray().handleSubmit).toHaveBeenCalledWith(expect.objectContaining({
+      Symptoms:[
+        { Symptom_Name: 'Headache' }
+      ]
+    }));
 
     expect(SymptomForm as jest.Mock).toHaveBeenCalledWith(expect.objectContaining({
       symptom: { Symptom_Name: 'Headache' }
@@ -120,13 +118,15 @@ describe('SymptomsContainer Component Functionality', () => {
   });
   it("submits new symptom", async () => {
     const user = userEvent.setup();
-    const mockOnSubmit = jest.fn();
-    const { getByLabelText, getByText } = render(<SymptomsContainer onSubmit={mockOnSubmit} symptoms={[]} />);
+    const { getByLabelText, getByText } = render(<SymptomsContainer />);
 
     await user.type(getByLabelText(/New Symptom Name Input/i), "Dizziness");
 
-    expect(mockOnSubmit).toHaveBeenCalledWith([
-      { Symptom_Name: 'Dizziness', Symptom_Description: '' }
-    ]);
+    expect(useTrackerArray().handleSubmit).toHaveBeenCalledWith(expect.objectContaining({
+      Symptoms:[
+        ...useTrackerArray().selectedDate.Symptoms,
+        { Symptom_Name: 'Dizziness', Symptom_Description: '' }
+      ]
+    }));
   });
 });

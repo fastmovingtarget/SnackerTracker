@@ -1,3 +1,4 @@
+//2025-09-04 : Changes to submit logic due to new context
 //2025-09-02 : Moved new symptom name form from SymptomForm
 //2025-08-28 : Symptoms container now updates when selected date is changed
 //2025-08-27 : Adding in a titled container for each section
@@ -6,26 +7,19 @@ import Symptom from '../../../Types/Symptom';
 import React, { useEffect } from 'react';
 import SymptomForm from './SymptomForm/SymptomForm';
 import TitledContainer from '../../../CustomComponents/TitledContainer';
+import { useTrackerArray } from '../../../Contexts/TrackerContext';
 import { StyledTextInput, RowContainer } from '../../../CustomComponents/CustomComponents';
 
-export default function SymptomsContainer({ symptoms, onSubmit }: { symptoms: Symptom[], onSubmit: (newSymptoms: (Symptom[])) => void }) {
-
-    const [displaySymptoms, setDisplaySymptoms] = React.useState<Symptom[]>([...symptoms]); // Add an empty Symptom for new entries
-
-    useEffect(() => {
-        setDisplaySymptoms([...symptoms]);
-    }, [symptoms]);
+export default function SymptomsContainer() {
+    const { selectedDate, handleSubmit } = useTrackerArray();
 
     const submitHandler = (newSymptom: Symptom, index: number) => {
-        let updatedSymptoms = [...displaySymptoms];
-
+        let updatedSymptoms = [...selectedDate?.Symptoms || []];
         updatedSymptoms[index] = newSymptom; // update the Symptom at the specified index
 
         updatedSymptoms = updatedSymptoms.filter(symptom => symptom.Symptom_Name !== ''); // Remove empty Symptoms
 
-        onSubmit(updatedSymptoms);
-
-        setDisplaySymptoms([...updatedSymptoms]);
+        handleSubmit({...selectedDate, Symptoms: updatedSymptoms});
     };
 
     const submitNewSymptomHandler = (newSymptomName: string) => {
@@ -35,13 +29,12 @@ export default function SymptomsContainer({ symptoms, onSubmit }: { symptoms: Sy
             Symptom_Name: newSymptomName,
             Symptom_Description: '',
         };
-        onSubmit([...displaySymptoms, newSymptom]);
-        setDisplaySymptoms([...displaySymptoms, newSymptom]);
+        handleSubmit({...selectedDate, Symptoms: [...selectedDate?.Symptoms || [], newSymptom]});
     };
 
     return (
         <TitledContainer title="Symptoms">
-            {displaySymptoms.map((symptom, index) => (
+            {selectedDate?.Symptoms.map((symptom, index) => (
                 <SymptomForm key={index} symptom={symptom} index={index} submitHandler={submitHandler} />
             ))}
             <RowContainer>
