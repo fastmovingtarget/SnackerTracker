@@ -1,3 +1,4 @@
+//2025-09-04 : Style Changes, added bullet point to new ingredient
 //2025-09-02 : Cleaned collapsible logic, editable text, moved new meal to Container
 //2025-08-28 : Fixed meal name switching to editing when date is re-clicked
 //2025-08-27 : Adding Colour theme export/import
@@ -96,11 +97,21 @@ export default function MealForm({ submitHandler, meal, index }: { submitHandler
                     </Pressable>
                 )}
                 <RowContainer>
+                    <StyledText style={{
+                            fontSize: 15,
+                            paddingVertical: 0
+                        }}>{"\u2022"}</StyledText>
                     <StyledTextInput
                         defaultValue=''
                         aria-label={`New Ingredient Name Input`}
                         placeholder='Enter new ingredient name...'
                         onFinishEditing={handleAddNewIngredient}
+                        style={{
+                            flex: 1,
+                            fontSize: 15,
+                            padding: 5,
+                            margin: 0
+                        }}
                     />
                 </RowContainer>
             </ColumnContainer>
