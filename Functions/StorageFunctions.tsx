@@ -1,3 +1,5 @@
+//2025-08-28 : Added a clearStorage function for testing, removed error flag when empty
+//2025-08-23 : Removed console log
 //2025-08-19 : Storage functions for accessing local storage
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type TrackerDay from '../Types/TrackerDay';
@@ -41,15 +43,23 @@ export const writeToStorage = async (key: string, data: TrackerDay[]) => {
 export const readFromStorage = async (key: string) => {
 
     const resultPromise = new Promise((resolve, reject) => {
-        console.log("Reading from storage with key:", key);
         storage.load({
             key: key, // The key for the data
         }).then((result) => {
             resolve(result);
         }).catch((err) => {
-            console.error("Error reading from storage:", err);
             resolve(null); // Return null if there's an error
         });
     })
     return resultPromise;
+}
+
+export const clearStorage = async (key: string) => {
+    try {
+        await storage.remove({
+            key: key, // The key for the data
+        });
+    } catch (e) {
+        console.error("Error clearing storage:", e);
+    }
 }

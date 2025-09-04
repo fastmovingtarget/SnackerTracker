@@ -1,7 +1,14 @@
+//2025-09-04 : Changed input text colour to primary text
+//2025-09-02 : Handle changes to text within component
+//2025-08-27 : Adding Colour theme export/import
+//2025-08-25 : Meal Form expands to show meal ingredients
+//2025-08-23 : Added handling for finishing editing
 //2025-06-05 : Simple implementation for containers
-import {Text, TextInput, NativeSyntheticEvent, TextInputSubmitEditingEventData} from "react-native";
+import { useState, useRef } from "react";
+import {TextInput, NativeSyntheticEvent, TextInputSubmitEditingEventData} from "react-native";
 import type { PropsWithChildren } from "react";
 import type { TextInputChangeEventData, TextStyle} from "react-native";
+import {Colours} from "../Constants/Colours";
 
 type InputTextProps = {
     style?: TextStyle,
@@ -10,12 +17,30 @@ type InputTextProps = {
     inputMode?:'numeric' | 'text',
     onChange?:(event : NativeSyntheticEvent<TextInputChangeEventData>) => void,
     onChangeText?:(text : string) => void,
+    onFinishEditing?: (text: string) => void,
     ["aria-label"]:string
     multiline?: boolean,
     numberOfLines?: number,
+    editable?: boolean,
+    autoFocus?: boolean
 }
 
-const StyledTextInput = ({style, children, defaultValue = "", inputMode = "text", onChange, onChangeText, 'aria-label' : ariaLabel, placeholder = "", multiline = false, numberOfLines = 1} : PropsWithChildren<InputTextProps>) => {
+const StyledTextInput = ({style, children, defaultValue = "", inputMode = "text", onChange, onChangeText, onFinishEditing, 'aria-label' : ariaLabel, placeholder = "", multiline = false, numberOfLines = 1, editable = true, autoFocus = false} : PropsWithChildren<InputTextProps>) => {
+
+    const [text, setText] = useState<string>(defaultValue);
+    const ref = useRef<TextInput>(null);
+
+    const handleChangeText = (text: string) => {
+        setText(text);
+        onChangeText && onChangeText(text);
+    };
+
+    const handleBlur = (event: NativeSyntheticEvent<TextInputSubmitEditingEventData>) => {
+        ref.current?.clear();
+        setText("");
+        onFinishEditing && onFinishEditing(text);
+    };
+
     return (
         <TextInput 
             style={{ 
@@ -25,12 +50,16 @@ const StyledTextInput = ({style, children, defaultValue = "", inputMode = "text"
             defaultValue={defaultValue}
             inputMode={inputMode}
             onChange={onChange}
-            onChangeText={onChangeText}
+            onChangeText={handleChangeText}
             aria-label={ariaLabel}
             placeholder={placeholder}
-            placeholderTextColor={"#e3dccf"}
+            placeholderTextColor={Colours.SecondaryText}
             multiline={multiline}
             numberOfLines={numberOfLines}
+            onBlur={handleBlur}
+            editable={editable}
+            ref={ref}
+            autoFocus={autoFocus}
         >
             {children}
         </TextInput>
@@ -39,11 +68,12 @@ const StyledTextInput = ({style, children, defaultValue = "", inputMode = "text"
 
 const inputTextStyles = {
         display: "flex",
+        flex: 1,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        backgroundColor: "#111111",
-        color: "#e3dccf",
+        backgroundColor: Colours.Secondary,
+        color: Colours.Text,
         borderRadius: 5,
         textAlignVertical: "center",
         width: "70%",

@@ -1,10 +1,13 @@
+//2025-08-26 : Removed import recursion
 //2025-06-13 : Apply the styles to the container rather than the pressable
 //2025-06-11 : Building a container for collapsible elements
 import {Pressable, View} from "react-native";
 import { useState } from "react";
 import type { PropsWithChildren } from "react";
 import type { ViewStyle, AccessibilityProps } from "react-native";
-import {RowContainer, StyledText, ColumnContainer} from "./CustomComponents";
+import RowContainer from "./RowContainer";
+import StyledText from "./StyledText";
+import ColumnContainer from "./ColumnContainer";
 
 type CollapsibleContainerProps = PropsWithChildren<{
     style? : ViewStyle, 

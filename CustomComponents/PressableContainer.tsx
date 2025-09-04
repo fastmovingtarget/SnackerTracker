@@ -1,7 +1,11 @@
+//2025-09-04 : Change to border colour
+//2025-09-02 : Minor Style Changes
+//2025-08-27 : Adding Colour theme export/import
 //2025-06-05 : Simple implementation for containers
 import {Pressable} from "react-native";
 import type { PropsWithChildren } from "react";
 import type { ViewStyle, AccessibilityProps } from "react-native";
+import {Colours} from "../Constants/Colours";
 
 type PressableContainerProps = PropsWithChildren<{
     style? : ViewStyle, 
@@ -28,12 +32,14 @@ const PressableContainer : React.FC<PressableContainerProps> = ({style, children
 
 const pressableContainerStyles = {
     display: "flex",
+    flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#272727",
-    borderColor: "#111111",
+    backgroundColor: Colours.Secondary,
+    borderColor: Colours.Accent,
     borderStyle: "solid",
     borderRadius: 5,
+    borderWidth: 1,
 } as ViewStyle;
 
 

@@ -1,8 +1,10 @@
+//2025-08-27 : Adding Colour theme export/import
 //2025-06-13 : Whitespace changes
 //2025-06-05 : Simple implementation for containers
 import {Text} from "react-native";
 import type { PropsWithChildren } from "react";
 import type { TextStyle } from "react-native";
+import { Colours } from "../Constants/Colours";
 
 type StyledTextProps = {
     style?: TextStyle,
@@ -29,7 +31,7 @@ const styledTextStyles = {
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 5,
-    color: "#e3dccf",
+    color: Colours.Text,
     padding: 10,
     margin:0,
     textAlignVertical: "center",

@@ -1,33 +1,45 @@
+//2025-09-04 : Styling and visual changes, hide button, hide on keyboard
+//2025-09-02 : Shrunk the arrows a little bit
+//2025-08-27 : Minor visual formatting changes
 //2025-06-13 : Tests for date selection and visibility changes
 //2025-06-05 : Implementing and testing a full calendar visual
 //2025-06-04 : Initial Commit with placeholder implementation
 
 import { render, screen, userEvent }from '@testing-library/react-native';
 import Calendar from './Calendar';
+import { useTrackerArray } from '../../Contexts/TrackerContext';
 
-const mockDataContext = {
-};
+jest.mock('../../Contexts/TrackerContext', () => {
+  return {
+    __esModule: true,
+    useTrackerArray: jest.fn()
+  }
+});
 
 
 beforeEach(() => {
   jest.resetAllMocks();
+    (useTrackerArray as jest.Mock).mockReturnValue({
+      setSelectedDate: jest.fn(),
+        selectedDate: { Date: new Date(), Meals: [], Symptoms: [], Notes: '' },
+    });
 });
 
-const monthsOfYear = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const monthsOfYear = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 describe("Recipe Plan Calendar Renders", () => {
     test("The month correctly", () => {
         const currentMonth = monthsOfYear[new Date().getMonth()];// can't hardcode this as it will change over time, but can at least check that it is the current month via a different method
 
         const {getByText} = render(
-            <Calendar isVisible={true} setSelectedDate={jest.fn()} />
+            <Calendar />
         );
 
         expect(getByText(`${currentMonth}`)).toBeTruthy();
     });
     test("Month navigation buttons", () => {
         const {getByText} = render(
-            <Calendar isVisible={true} setSelectedDate={jest.fn()} />
+            <Calendar />
         );
         
         expect(getByText(/\u2039/i)).toBeTruthy();
@@ -35,43 +47,68 @@ describe("Recipe Plan Calendar Renders", () => {
     });
     test("The calendar day headers", () => {
         const {getByText} = render(
-            <Calendar isVisible={true} setSelectedDate={jest.fn()} />
+            <Calendar />
         );
 
-        expect(getByText(/M/i)).toBeTruthy();
-        expect(getByText(/Tu/i)).toBeTruthy();
-        expect(getByText(/W/i)).toBeTruthy();
-        expect(getByText(/Th/i)).toBeTruthy();
-        expect(getByText(/F/i)).toBeTruthy();
-        expect(getByText(/Sa/i)).toBeTruthy();
-        expect(getByText(/Su/i)).toBeTruthy();
-        
+        expect(getByText("M")).toBeTruthy();
+        expect(getByText("Tu")).toBeTruthy();
+        expect(getByText("W")).toBeTruthy();
+        expect(getByText("Th")).toBeTruthy();
+        expect(getByText("F")).toBeTruthy();
+        expect(getByText("Sa")).toBeTruthy();
+        expect(getByText("Su")).toBeTruthy();
+
     });
     test("The actual calendar itself", () => {
         const today = new Date();
         const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
 
         const {getAllByText} = render(
-            <Calendar isVisible={true} setSelectedDate={jest.fn()} />
+            <Calendar />
         );
 
         for(let i = 1; i <= daysInMonth; i++) {
             expect(getAllByText(`${i}`).length).toBeGreaterThan(0);// Check that each day of the month is rendered at least once
         }        
     });
-    test("Nothing when isVisible is false", () => {
-        const {queryByText} = render(
-            <Calendar isVisible={false} setSelectedDate={jest.fn()} />
+    test("Calendar visibility toggle button", () => {
+        const {getByText} = render(
+            <Calendar />
+        );
+        expect(getByText(/Hide Calendar/i)).toBeTruthy();
+    });
+    test("Nothing when Hide Calendar has been clicked is false", async () => {
+        const user = userEvent.setup();
+
+        const {queryByText, getByText} = render(
+            <Calendar />
         );
 
-        expect(queryByText(/./i)).toBeNull();
-    })
+        await user.press(getByText(/Hide Calendar/i));
+
+        expect(queryByText(/Show Calendar/i)).toBeTruthy();
+
+        expect(queryByText("M")).toBeNull();
+        expect(queryByText("Tu")).toBeNull();
+        expect(queryByText("W")).toBeNull();
+        expect(queryByText("Th")).toBeNull();
+        expect(queryByText("F")).toBeNull();
+        expect(queryByText("Sa")).toBeNull();
+        expect(queryByText("Su")).toBeNull();
+
+        expect(queryByText(/\u2039/i)).toBeNull();
+        expect(queryByText(/\u203A/i)).toBeNull();
+        
+        for(let i = 1; i <= 31; i++) {
+            expect(queryByText(`${i}`)).toBeNull();// Check that each day of the month is not rendered
+        }
+    });
 });
 describe("Recipe Plan Calendar functionality", () => {
     test("The month changes when the left button is pressed", async () => {
         const user = userEvent.setup();
         const {getByText, getAllByText} = render(
-            <Calendar isVisible={true} setSelectedDate={jest.fn()} />
+            <Calendar />
         );
 
         const currentMonth = new Date().getMonth();
@@ -79,7 +116,7 @@ describe("Recipe Plan Calendar functionality", () => {
 
         await user.press(getByText(/\u2039/i));
 
-        expect(getByText(new Date(previousMonth).toLocaleString('default', { month: 'short' }))).toBeTruthy();
+        expect(getByText(new Date(previousMonth).toLocaleString('default', { month: 'long' }))).toBeTruthy();
         const daysInMonth = new Date(new Date().getFullYear(), currentMonth, 0).getDate();
 
         for(let i = 1; i <= daysInMonth; i++) {
@@ -90,7 +127,7 @@ describe("Recipe Plan Calendar functionality", () => {
     test("The month changes when the right button is pressed", async () => {
         const user = userEvent.setup();
         const {getByText, getAllByText} = render(
-            <Calendar isVisible={true} setSelectedDate={jest.fn()} />
+            <Calendar />
         );
 
         const currentMonth = new Date().getMonth();
@@ -98,7 +135,7 @@ describe("Recipe Plan Calendar functionality", () => {
 
         await user.press(getByText(/\u203A/i));
 
-        expect(getByText(new Date(nextMonth).toLocaleString('default', { month: 'short' }))).toBeTruthy();
+        expect(getByText(new Date(nextMonth).toLocaleString('default', { month: 'long' }))).toBeTruthy();
         const daysInMonth = new Date(new Date().getFullYear(), currentMonth + 2, 0).getDate();
 
         for(let i = 1; i <= daysInMonth; i++) {
@@ -107,15 +144,14 @@ describe("Recipe Plan Calendar functionality", () => {
     });
 
     test("Selecting a date calls setSelectedDate with the correct date", async () => {
-        const mockSetSelectedDate = jest.fn();
         const {getByText} = render(
-            <Calendar isVisible={true} setSelectedDate={mockSetSelectedDate} />
+            <Calendar />
         );
 
         const dateToSelect = new Date(new Date().getFullYear(), new Date().getMonth(), 15); // Select the 15th of the current month
 
         await userEvent.press(getByText(`15`));
 
-        expect(mockSetSelectedDate).toHaveBeenCalledWith(dateToSelect);
+        expect(useTrackerArray().setSelectedDate).toHaveBeenCalledWith(dateToSelect);
     });
 })

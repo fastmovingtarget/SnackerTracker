@@ -1,6 +1,8 @@
+//2025-09-02 : Editable text now switches between text and text input again
+//2025-08-23 : Editable text changed to be a glorified text input
 //2025-08-19 : Wrapper and styles for Editable Text Component
 import {Pressable, View} from "react-native";
-import { useState, type PropsWithChildren } from "react";
+import { useState, useEffect, type PropsWithChildren } from "react";
 import type { ViewStyle } from "react-native";
 import RowContainer from "./RowContainer";
 import PressableContainer from "./PressableContainer";
@@ -11,75 +13,41 @@ import Button from "./Button";
 type EditableTextProps = {
     containerStyle?: ViewStyle,
     text:string,
-    onChangeText?: (newText: string) => void,
-    onDelete?: () => void,
-    onEdit?: () => void,
-    onFinishEditing?: () => void,
-    ["aria-label"]?:string
+    placeholder?: string,
+    onFinishEditing: (text :string) => void,
+    ["aria-label"]?:string,
+    isEditing: boolean,
+    autoFocus?: boolean
 }
 
-const EditableText = ({containerStyle, text, onChangeText, onDelete, onEdit, onFinishEditing, 'aria-label' : ariaLabel} : PropsWithChildren<EditableTextProps>) => {
-    const [editing, setEditing] = useState(text === "");
-
+const EditableText = ({text, placeholder, onFinishEditing, 'aria-label' : ariaLabel, isEditing = false, autoFocus = true} : PropsWithChildren<EditableTextProps>) => {
     return (
-        <RowContainer style={containerStyle}>
-            {editing ? 
-                <StyledTextInput
-                    style={{flex: 1, textAlign: "center"}}
-                    aria-label={`${ariaLabel || ""} Input`}
-                    placeholder='Edit Text'
-                    defaultValue={text}
-                    onChangeText={(newText) => {
-                        if (typeof onChangeText === "function") {
-                            onChangeText(newText);
-                        }
+        <>
+            {isEditing ? (
+            <StyledTextInput
+                    style={{
+                        flex: 1,
+                        fontSize: 15,
+                        padding: 5,
+                        margin: 0
                     }}
-                /> :
-                <StyledText style={{flex: 1}} aria-label={ariaLabel}>
-                    {text}
-                </StyledText>
-            }
-            <RowContainer style={{ padding:0, margin:0, width:"auto"}}>
-                {editing ? // If editing, show the Done button
-                <Button labelText="Done" 
-                        aria-label={`${ariaLabel} Done`} 
-                        onPress={() => {
-                                onFinishEditing && onFinishEditing();//if provided, call the onFinishEditing callback
-                            setEditing(!editing)
-                        }}
-                /> : // If not editing, show the Edit and Delete buttons
-                <>
-                    <Button labelText="Edit" 
-                            aria-label={`${ariaLabel} Edit`} 
-                            onPress={() => {
-                                if(!onEdit) return;
-                                onEdit && onEdit();
-                                setEditing(!editing)
-                            }}
-                    />
-                    <Button labelText={"Delete"} aria-label={`${ariaLabel} Delete`} onPress={() =>  {
-                        if (typeof onDelete === "function") 
-                            onDelete()
-                        }}
-                    />
-                </>
-            }
-            </RowContainer>
-            
-        </RowContainer>
+                aria-label={`${ariaLabel || ""} Input`}
+                placeholder={placeholder}
+                defaultValue={text}
+                onFinishEditing={onFinishEditing}
+                autoFocus={autoFocus}
+            />
+            ) : (
+            <StyledText
+                style={{flex: 1,
+                    fontSize: 15,
+                    padding:5,
+                    margin: 0
+                }}
+                aria-label={`${ariaLabel || ""} Text`}
+            >{text}</StyledText>)}
+        </>
     );
 }
-
-const rowContainerStyles = {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    textAlignVertical: "center",
-    textAlign: "center",
-    color: "#e3dccf",
-    borderRadius: 5,
-    width: "100%",
-    padding: 5,
-} as ViewStyle;
 
 export default EditableText;
