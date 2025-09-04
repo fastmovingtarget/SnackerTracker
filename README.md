@@ -20,4 +20,8 @@ Food diary and symptom tracker
 - Pattern tracking and data visualisation - probably in a new tab - need to get measurable metrics for how the user feels.
 - Maybe find a way to break down a meal into nutritional value - might require AI support?
 
-# Current Stage : MVP Development
+# Completed Stages : MVP Development
+  - Meal and Ingredients can be stored for each day.
+  - Symptom names and descriptions can be stored.
+
+# Current Stage : Paused on MS1
