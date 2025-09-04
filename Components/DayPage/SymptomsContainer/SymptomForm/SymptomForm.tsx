@@ -1,3 +1,4 @@
+//2025-09-04 : Style changes, added bullet point to new description
 //2025-09-02 : Added collapsible to description, moved blank name handling to container
 //2025-08-26 : Added symptom description field back in
 //2025-08-23 : Symptom form now contains only text input
@@ -66,11 +67,20 @@ export default function SymptomForm({ submitHandler, symptom, index }: { submitH
             </Pressable>
             ) : (
             <RowContainer>
+                                <StyledText style={{
+                                        fontSize: 15,
+                                        paddingVertical: 0
+                                    }}>{"\u2022"}</StyledText>
                 <StyledTextInput
                     defaultValue={""}
                     onFinishEditing={handleFinishEditingDescription}
                     placeholder='Enter Symptom Description...'
                     aria-label={`Symptom Description ${index + 1} Input`}
+                    style={{
+                        flex: 1,
+                        fontSize: 15,
+                        padding: 5
+                    }}
                 />
             </RowContainer>
             )}
