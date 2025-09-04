@@ -1,3 +1,4 @@
+//2025-09-04 : Removed flex grow and margin
 //2025-08-27 : Adding Colour theme export/import
 //2025-06-04 : Simple implementation for containers
 import {ScrollView} from "react-native";
@@ -25,7 +26,7 @@ const ScrollableContainer = ({style, children, 'aria-label' : ariaLabel} : Props
 
 const scrollableContainerStyles = {
     display: "flex",
-    flexGrow: 1,
+    width: "100%",
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
@@ -33,7 +34,6 @@ const scrollableContainerStyles = {
     color: Colours.Text,
     borderRadius: 10,
     padding: 10,
-    margin: 5,
 } as ViewStyle;
 
 export default ScrollableContainer;
