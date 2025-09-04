@@ -1,18 +1,22 @@
+//2025-09-04 : Styling and visual changes, hide button, hide on keyboard
 //2025-09-02 : Shrunk the arrows a little bit
 //2025-08-27 : Adding Colour theme export/import
 //2025-06-13 : Splitting calendar into specific rows rather than overflowing a single row
 //2025-06-05 : Implementing and testing a full calendar visual
 //2025-06-04 : Initial Commit with placeholder implementation
-import { StyleSheet, Text, View } from 'react-native';
 import React, { useState } from 'react';
 import StyledText from '../../CustomComponents/StyledText';
 import ColumnContainer from '../../CustomComponents/ColumnContainer';
 import RowContainer from '../../CustomComponents/RowContainer';
 import PressableContainer from '../../CustomComponents/PressableContainer';
+import { useTrackerArray } from '../../Contexts/TrackerContext';
+import Fonts from '../../Constants/Fonts';
 import { Colours } from '../../Constants/Colours';
 
-export default function Calendar({ setSelectedDate, isVisible }: { setSelectedDate: (date: Date) => void, isVisible: boolean }) {
-    
+export default function Calendar() {
+    const { setSelectedDate, selectedDate, isKeyboard } = useTrackerArray();
+    const [calendarVisible, setCalendarVisible] = useState(true);
+
     const [monthIndex, setMonthIndex] = useState(0); // 0 for current month, -1 for last month, 1 for next month
 
     const daysOfWeek = ["M", "Tu", "W", "Th", "F", "Sa", "Su"];
@@ -26,62 +30,66 @@ export default function Calendar({ setSelectedDate, isVisible }: { setSelectedDa
     for (let i = 0; i < 42; i++){
         monthArray[Math.trunc(i/7)].push(new Date(monthStartDate.getFullYear(), monthStartDate.getMonth(), (2 + i) - (monthStartDate.getDay() || 7)));
     }
-
-
-   /*  const daysArray = new Array(42).fill(null).map ((_, index) => {
-        return new Date(today.getFullYear(), today.getMonth() + monthIndex, (2 + index) - (monthStartDate.getDay() || 7));
-    })
- */
+    if(isKeyboard) {
+        return <></>;
+    }
     return (
-        <ColumnContainer style={{display: isVisible ? 'flex' : 'none', height: "50%", padding:0, margin:0, alignItems: 'center'}}>
-            <RowContainer>
-                <PressableContainer onPress={() => setMonthIndex(monthIndex - 1)} style={{ paddingHorizontal: 20, paddingVertical: 20, borderRadius:25, height: "0%", width:"0%"}}>
-                    <StyledText style={{ fontSize:30, position: 'absolute', top: -12, left: 5 }}>
-                        {'\u2039'}
-                    </StyledText>
-                </PressableContainer>
-                    <StyledText style={{ flex: 1, fontSize:25, margin:0, padding:0, textAlign: 'center', borderRadius:0 }}>
-                        {monthStartDate.toLocaleString('default', { month: 'short' })}
-                    </StyledText>
-                <PressableContainer onPress={() => setMonthIndex(monthIndex + 1)} style={{ paddingHorizontal: 20, paddingVertical: 20, borderRadius:25, height: "0%", width:"0%"}}>
-                    <StyledText style={{ fontSize:30, position: 'absolute', top: -12, left: 5 }}>
-                        {'\u203A'}
+        <>
+            <RowContainer style={{padding:0, margin:0}}>
+                <PressableContainer style={{flex:1, padding:0, margin:0}} onPress={() => setCalendarVisible(!calendarVisible)}>
+                    <StyledText style={{ fontSize:20, padding:0, margin:0, textAlign: 'center' }}>
+                        {calendarVisible ? "Hide Calendar" : "Show Calendar"}
                     </StyledText>
                 </PressableContainer>
             </RowContainer>
-            <RowContainer>
-                {daysOfWeek.map((day, index) => (
-                    <RowContainer key={`day-header-${index}`} style={{ flex: 1, justifyContent: 'center' }}>
-                        <StyledText style={{ flex: 1, textAlign: 'center' }}>
-                            {day}
-                        </StyledText>
-                    </RowContainer>
-                ))}
-            </RowContainer>
-            <ColumnContainer style={{ justifyContent: 'space-between' , padding:0, flex:1}}>
-                {monthArray.map((week, weekIndex) => (
-                    <RowContainer key={`week-${weekIndex}`} style={{ justifyContent: 'space-between', padding:0, flex:1 }}>
-                        {week.map((date, dateIndex) => (
-                            <PressableContainer 
-                                key={`date-${weekIndex}-${dateIndex}`} 
-                                style={{margin: 3, padding: 0, flex:1 }} 
-                                onPress={() => setSelectedDate(date)}
-                            >
-                                <StyledText style={{ padding:0, margin:0, textAlign: 'center', color: date.getMonth() === monthStartDate.getMonth() ? Colours.Text : 'gray' }}>
-                                    {date.getDate()}
-                                </StyledText>
-                            </PressableContainer>
-                        ))}
-                    </RowContainer>
-                ))}
-                {/* {daysArray.map((date, index) => (
-                    <PressableContainer key={`date-${index}`} style={{width: '13%', height: "15%", margin:1, padding:1, backgroundColor: '#000000'}} onPress={() => setSelectedDate(date)}>
-                        <StyledText style={{ textAlign: 'center' }}>
-                            {date.getDate()}
+            <ColumnContainer style={{display: calendarVisible ? 'flex' : 'none', padding:5, margin:0, alignItems: 'center', flex:2}}>
+                <RowContainer style={{padding:0, margin:0}}>
+                    <PressableContainer onPress={() => setMonthIndex(monthIndex - 1)} style={{ paddingHorizontal: 20, paddingVertical: 20, borderRadius:25, height: "0%", width:"0%"}}>
+                        <StyledText style={{ fontSize:30, position: 'absolute', top: -13, left: 4 }}>
+                            {'\u2039'}
                         </StyledText>
                     </PressableContainer>
-                ))} */}
+                        <StyledText style={{ flex: 1, fontSize: Fonts.sizes.title, margin:0, padding:0, textAlign: 'center', borderRadius:0 }}>
+                            {monthStartDate.toLocaleString('default', { month: 'long' })}
+                        </StyledText>
+                    <PressableContainer onPress={() => setMonthIndex(monthIndex + 1)} style={{ paddingHorizontal: 20, paddingVertical: 20, borderRadius:25, height: "0%", width:"0%"}}>
+                        <StyledText style={{ fontSize:30, position: 'absolute', top: -13, left: 6 }}>
+                            {'\u203A'}
+                        </StyledText>
+                    </PressableContainer>
+                </RowContainer>
+                <RowContainer style={{padding:0, margin:0}}>
+                    {daysOfWeek.map((day, index) => (
+                        <RowContainer key={`day-header-${index}`} style={{ flex: 1, justifyContent: 'center', padding:0, margin:0 }}>
+                            <StyledText style={{ flex: 1, textAlign: 'center', fontSize: Fonts.sizes.medium }}>
+                                {day}
+                            </StyledText>
+                        </RowContainer>
+                    ))}
+                </RowContainer>
+                <ColumnContainer style={{ justifyContent: 'space-between' , padding:0, flex:1}}>
+                    {monthArray.map((week, weekIndex) => (
+                        <RowContainer key={`week-${weekIndex}`} style={{ justifyContent: 'space-between', padding:0, flex:1 }}>
+                            {week.map((date, dateIndex) => (
+                                <PressableContainer 
+                                    key={`date-${weekIndex}-${dateIndex}`} 
+                                    style={{margin: 2, padding: 0, flex:1, backgroundColor: date.toDateString() === selectedDate.Date.toDateString() ? Colours.Primary : Colours.Secondary }} 
+                                    onPress={() => {
+                                        if(date.getMonth() !== monthStartDate.getMonth()) {
+                                            setMonthIndex(date.getMonth() - today.getMonth());
+                                        }
+                                        setSelectedDate(date)
+                                    }}
+                                >
+                                    <StyledText style={{ padding:0, margin:0, textAlign: 'center', fontSize: Fonts.sizes.large, color: date.getMonth() === monthStartDate.getMonth() ? Colours.Text : Colours.SecondaryText }}>
+                                        {date.getDate()}
+                                    </StyledText>
+                                </PressableContainer>
+                            ))}
+                        </RowContainer>
+                    ))}
+                </ColumnContainer>
             </ColumnContainer>
-        </ColumnContainer>
+        </>
     );
 }
