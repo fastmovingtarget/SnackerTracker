@@ -1,8 +1,10 @@
+//2025-09-04 : added a little padding, title is no longer bold
 //2025-08-27 : Border and Title for a container
 import {View, Text} from "react-native";
 import type { PropsWithChildren } from "react";
 import type { TextStyle, ViewStyle } from "react-native";
 import { Colours } from "../Constants/Colours";
+import Fonts from "../Constants/Fonts";
 
 type TitledContainerProps = {
     style?: ViewStyle,
@@ -40,8 +42,7 @@ const columnContainerStyles = {
     margin: 5,
 } as ViewStyle;
 const titleStyle = {
-    fontSize: 12,
-    fontWeight: "bold",
+    fontSize: Fonts.sizes.small,
     marginBottom: 5,
     color: Colours.Text,
     margin:0,
@@ -56,6 +57,7 @@ const titleContainerStyle = {
     left: "3%",
     top: -10,
     backgroundColor: Colours.Primary,
+    padding:2
 } as ViewStyle;
 
 export default TitledContainer;
